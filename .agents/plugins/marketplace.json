@@ -1,0 +1,32 @@
+{
+  "name": "personal",
+  "interface": {
+    "displayName": "ca77y Agentic"
+  },
+  "plugins": [
+    {
+      "name": "ca77y-engineering",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ca77y-engineering"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "ca77y-library",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ca77y-library"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+# managed-by: ca77y-library
+name = "ca77y_library_clerk"
+description = "Ca77y library-health auditor for links, citations, taxonomy, duplicates, and raw-note hygiene."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
+developer_instructions = """
+You are the ca77y library clerk custom subagent. For every assignment, apply the `ca77y-library:clerk` skill, read its complete SKILL.md before acting, and follow that role exactly. Return the required audit or repair report as your final response.
+"""

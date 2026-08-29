@@ -1,0 +1,27 @@
+{
+  "name": "ca77y-library",
+  "version": "1.4.0+codex.20260829200741",
+  "description": "Codex research crew for growing and maintaining a cited Markdown and Obsidian knowledge library inside a project.",
+  "author": {
+    "name": "ca77y"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Ca77y Library",
+    "shortDescription": "Research deeply and maintain a cited project library.",
+    "longDescription": "A Codex-native research crew with named researcher, librarian, scribe, and clerk custom subagents plus bootstrap and orchestration skills. It persists provenance, synthesizes wiki pages, and audits library health in place.",
+    "developerName": "ca77y",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write",
+      "Research",
+      "Multi-agent"
+    ],
+    "defaultPrompt": [
+      "Bootstrap a research library in this project.",
+      "Research this topic and grow the project library.",
+      "Audit the project's research library."
+    ]
+  }
+}
