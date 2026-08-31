@@ -9,9 +9,8 @@ because the pipeline binds real calls to what it says.
 **Linear** — the `Agentic Codex` project in the `Smerfy` team (`SMR`).
 <https://linear.app/ca77y/project/agentic-codex-f198bf80e38c>
 
-Work is not tracked in this repository. Stories migrated from `agentic-claude` retain
-their `SMR-<number>` identity; their Linear project is `Agentic Codex`, and migration
-notes in their descriptions explain any renamed paths or Codex-native substitutions.
+Work is not tracked in this repository. Stories use their `SMR-<number>` identity and
+belong to the `Agentic Codex` Linear project.
 
 ## Reaching it
 

@@ -1,6 +1,6 @@
 # ca77y-agentic for Codex
 
-This repository rebuilds the ca77y agentic toolkit as two native Codex plugins. The source capabilities are preserved, but Claude-only agent manifests, path variables, tool calls, and model names are replaced with Codex skills, first-class custom subagents, and collaboration primitives.
+This repository implements the ca77y agentic toolkit as two native Codex plugins using Codex skills, first-class custom subagents, and collaboration primitives.
 
 ## Plugins
 
@@ -32,7 +32,7 @@ The library plugin is standalone. Engineering uses it when installed and falls b
 
 ## Codex-native orchestration
 
-Each former Claude agent has two Codex-native parts:
+Each callable agent role has two Codex-native parts:
 
 - a standalone custom-agent TOML, installed under `~/.codex/agents/`, which gives the subagent its stable name, model, reasoning effort, and identity;
 - a plugin role skill under `skills/<role>/SKILL.md`, which supplies the detailed operating procedure and packaged references.
