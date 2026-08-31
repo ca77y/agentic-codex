@@ -7,6 +7,7 @@ This repository contains the Codex-native rebuild of the ca77y agentic toolkit.
 - `.agents/plugins/marketplace.json` is the repo-local marketplace catalog.
 - `plugins/ca77y-engineering/` contains the delivery-pipeline skills.
 - `plugins/ca77y-library/` contains the research-library skills and bootstrap resources.
+- `library/` contains the Markdown research wiki, raw sources, synthesis, and metadata.
 
 ## Editing rules
 
@@ -20,3 +21,7 @@ This repository contains the Codex-native rebuild of the ca77y agentic toolkit.
 ## Validation
 
 Run the skill quick validator for every skill directory, then run the plugin validator for both plugin roots. After a marketplace-backed update, use the plugin-creator cachebuster and reinstall flow.
+
+## Library
+
+Read `library/_meta/librarian.md` before library work. Preserve raw notes and cite durable claims back to sources; no always-on service is required for the library to work.
