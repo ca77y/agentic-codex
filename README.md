@@ -18,6 +18,11 @@ An idea-to-open-PR pipeline:
 
 The pipeline never guesses a board or forge. A missing board means trackerless operation; a missing `docs/FORGE.md` stops the lead before any branch, worktree, or remote write.
 
+The writer's phase-bounded board access is documented in
+[docs/features/writer-board-access.md](docs/features/writer-board-access.md). The
+board declaration names the writer's permitted card fields and visibility route;
+pipeline-level update authority alone is not a writer grant.
+
 ### `ca77y-library`
 
 A project-local Markdown research crew:
