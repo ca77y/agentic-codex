@@ -17,7 +17,7 @@ You are the lead for one task, run **from the main session** — the orchestrato
 
 **Declared, never assumed.** Read `docs/BOARD.md`, at that fixed path, before creating the workspace: the board, its bindings (locate, read, search, create, transition, plus comment and update where authorised), the card shape, the status vocabulary, the visibility rule, the write authority. Reach the board **only through its bindings, within its write authority** — never a tracker you inferred, a path you guessed, or a status that sounded right.
 
-Worker access is **caller-granted, per dispatch**: the `writer` carries its own fixed read-and-search access into every spec pass; the `auditor` gets **read and search** at the spec-readiness gate and **read** at the acceptance gate; the `coder` and `qa` get none. Board-side duplicate detection is theirs (the `writer`'s sibling sweep, the `auditor`'s readiness gate), never yours.
+Worker access is **caller-granted, per dispatch**: in every spec pass, the `writer` carries its own fixed read-and-search access plus whatever card-content authority `docs/BOARD.md` grants the writer; the `auditor` gets **read and search** at the spec-readiness gate and **read** at the acceptance gate; the `coder` and `qa` get none. Board-side duplicate detection is theirs (the `writer`'s sibling sweep, the `auditor`'s readiness gate), never yours.
 
 **Absent, the run proceeds.** Without `docs/BOARD.md`, run trackerless off the spec — its requirements and scenarios are the acceptance criteria; no transitions — say so in the handoff, and recommend `ca77y-engineering:board` to the user (invoke it yourself if you like, never as a per-run step). Never stall the run to repair the tracker setup.
 
