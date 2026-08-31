@@ -35,8 +35,8 @@ Eight questions. Ask the user only what the project cannot tell you — read the
 4. **What shape is a card?** Where the scaffold or field set is defined, and which field carries identity, type, priority, dependencies, and acceptance criteria. Note any format quirk that constrains whoever writes one.
 5. **What are the statuses?** The full vocabulary in the board's own words, then which value means *work started* and which means *awaiting review*, plus the value each should be transitioned *from*.
 6. **Where must a status write land to be seen immediately?** For a repo-local board that is the root checkout, uncommitted, never a story branch. For a hosted board it is the API call.
-7. **What may the pipeline write?** The exhaustive list. Silence here means the two status transitions and nothing else.
-8. **What stays the human's?** Terminal states, card content, relationships. Name them, so a follow-up is reported rather than applied.
+7. **What may the pipeline write?** The exhaustive list. Silence here means the two status transitions and nothing else. Every declaration states the writer-specific grant or its absence, the exact fields it covers (which may be none), that the default phase is the initial pre-build spec pass, whether a later respec has a separate grant, and where a repo-local correction would be written. Pipeline-level `update` authority alone does not imply writer authority.
+8. **What stays the human's?** Terminal states, unlisted card content, relationships. Name them, so a follow-up is reported rather than applied.
 
 ## The template
 
@@ -88,7 +88,20 @@ gate reads them one at a time.
 
 <The exhaustive list. Default: the two transitions above and nothing else.>
 
-Everything else — <terminal states, card content, relationships> — is the human's. The
+Every declaration distinguishes the update binding from the writer's grant:
+
+- **writer card-content grant** — <present or absent>; if present, it covers only
+  `<fields>` during the initial pre-build spec pass.
+- **later respec** — <a separately granted phase and fields, or no grant>.
+- **correction visibility route** — <the hosted update call, or the named card in
+  the repo root checkout on its base branch, left uncommitted and outside the story
+  worktree; when the grant is absent, name where an authorised correction would go
+  if a future declaration grants one>.
+
+Pipeline-level `update` authority does not itself grant the writer permission to edit
+card content.
+
+Everything else — <terminal states, any unlisted card content, relationships> — is the human's. The
 pipeline reports follow-ups rather than applying them.
 ````
 
@@ -98,7 +111,7 @@ Three shapes, none privileged. Copy the closest and cut what does not apply.
 
 **Repo-local Markdown.** *Reaching it:* files in this repo, no service. *Operations:* locate `docs/tasks/<slug>.md` by slug or title; read the file; search by grep across `docs/tasks/` including `_backlog/` and `_archive/`; create by copying `docs/_templates/story.md`; transition by editing the card's checkbox symbol. *Statuses:* work started → `[/]` (expect `[ ]` or `[<]`), awaiting review → `[?]` (expect `[/]`). *Visibility:* the root checkout on the base branch, left uncommitted — a card edited on a story branch stays invisible until it merges. *Quirk worth recording:* the kanban view scans files for checkbox markers and surfaces every match, so nested checkboxes create phantom cards.
 
-**A tracker over MCP** (Linear, Jira, GitHub Issues). *Reaching it:* the tracker's MCP server, connected in this workspace — name the tools for reading an issue, searching, creating, and updating state. *Operations:* bind each to its tool, and say which team, project, or repository scopes them. *Statuses:* the workflow states as the tracker spells them, exactly. *Visibility:* the tool call itself; no checkout is involved. *Worth stating:* whether the pipeline may comment, and whether it may attach the PR link — both are outside the default authority unless this file grants them.
+**A tracker over MCP** (Linear, Jira, GitHub Issues). *Reaching it:* the tracker's MCP server, connected in this workspace — name the tools for reading an issue, searching, creating, and updating state. *Operations:* bind each to its tool, and say which team, project, or repository scopes them. *Statuses:* the workflow states as the tracker spells them, exactly. *Visibility:* the tool call itself; no checkout is involved. *Worth stating:* the writer's field-limited initial pre-build spec-pass card-content grant, whether a later respec has a separate grant, whether the pipeline may comment, and whether it may attach the PR link — all are outside the default authority unless this file grants them.
 
 **A CLI or documented REST endpoint.** *Reaching it:* the command, and that it is already authenticated for whoever runs the pipeline. *Operations:* the concrete invocation per operation, with the project key or board id filled in. *Visibility:* the call. *Worth stating:* the rate limit or approval step, if either can make a write fail in a way that looks like a bug.
 

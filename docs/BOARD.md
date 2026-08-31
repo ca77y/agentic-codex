@@ -34,6 +34,8 @@ The **Linear connector**, already connected in this workspace. Its tools are nam
   `issueId` and a Markdown `body`.
 - **update** — `mcp__codex_apps__linear_save_issue` with the issue `id` and only the
   fields being changed (`description`, `labels`, `priority`, `links`, or relations).
+  The writer-specific grant below governs when the writer may call it for card
+  content.
 
 ## Card shape
 
@@ -78,8 +80,19 @@ cosmetic round-trip quirk, not a content change.
 
 ## Visibility
 
-A status write is the Linear call itself and is visible immediately. No checkout is
-involved; never write a board transition into a repository, worktree, or branch.
+A status write is the Linear call itself and is visible immediately. Card corrections
+use the bound Linear update call and are visible there immediately; no checkout is
+involved, and never write a board transition or card correction into a repository,
+worktree, or branch.
+
+## Writer card-content grant
+
+The writer has an explicit grant during the **initial pre-build spec pass** to use the
+bound `update` operation to correct the card's `description`, `acceptance criteria`,
+`labels`, `priority`, and `relations`. The grant has no later-respec phase; any later
+respec mutation would require a separate grant named in this declaration. Because
+this is a hosted Linear board, the writer applies an authorised correction through the
+Linear call, not through a repository checkout.
 
 ## What the pipeline may write
 
@@ -91,16 +104,17 @@ Permitted and expected:
   *open the change* binding to the issue through the `links` field.
 - **comment** — progress, production hazards, and the handoff summary may be posted to
   the issue.
-- **edit card content** — during the writer's spec pass, the description, acceptance
-  criteria, labels, priority, and relations may be corrected when the declaration and
-  role instructions authorise it. After the acceptance gate passes, the lead may apply
+- **edit card content** — the writer's explicit grant above applies only during the
+  initial pre-build spec pass to the listed description, acceptance criteria, labels,
+  priority, and relations. A later respec has no card-content grant unless a separate
+  later phase is named here. After the acceptance gate passes, the lead may apply
   board follow-ups the writer retained.
 
 The pipeline never moves a status through a human gate. It never changes an acceptance
 criterion to match an implementation, and it never changes criteria between the build
-and the acceptance gate. A writer may correct a defective criterion during the spec
-pass and record the deviation; a criterion found mis-worded during the acceptance gate
-is escalated to the human for correction in a later run.
+and the acceptance gate. A writer may correct a defective criterion during the initial
+pre-build spec pass and record the deviation; a criterion found mis-worded during the
+acceptance gate is escalated to the human for correction in a later run.
 
 Everything outside the authority listed above — especially terminal states and a
 rewrite of the product goal — is the human's. When it is unclear whether an edit is a
