@@ -21,6 +21,9 @@ credentials live in this repository or belong in this file.
 
 ## Branches and worktrees
 
+- **Default working checkout** — ordinary repository work happens directly on
+  `master` in the repository root. Create or use a separate branch and worktree only
+  when running the `lead` workflow or when the user explicitly asks for one.
 - **Target branch** — `master`. Every story branches from it and every PR targets it.
   The pipeline never commits to it, checks it out in a story worktree, or pushes it.
 - **Story worktrees** — `.worktrees/<branch>` at the repository root, covered by the
@@ -70,7 +73,9 @@ Never force-push, amend or rebase pushed history, or push `master`.
 - **read the change** —
   `gh pr view <number> --repo ca77y/agentic-codex --json title,body,url,baseRefName,headRefName`
   and `gh pr diff <number> --repo ca77y/agentic-codex`.
-- **re-fire the review** — *not available*. No automated review is configured.
+- **re-fire the review** —
+  `gh pr comment <number> --repo ca77y/agentic-codex --body '@codex review'`.
+  Run after pushing each fix round to request review of the updated PR.
 - **merge** — *not available*. Merging and the merge method are the human's.
 
 ## The change artifact
@@ -92,10 +97,12 @@ same PR and branch.
 
 ## The review
 
-No automated reviewer or review workflow is configured in this repository. A human
-reviews the open PR. The lead opens it, reports it as open and not yet reviewed, and
-does not poll or wait. Findings re-enter the pipeline when a human invokes
-`ca77y-engineering:lead` again with the PR or its findings.
+Codex reviews pull requests through the GitHub integration. Opening a PR for review
+triggers the initial review; posting the literal comment `@codex review` fires a new
+review. After pushing a fix round, the lead uses the **re-fire the review** binding
+above, reports the review as requested, and does not poll or wait for its result.
+Findings appear on the PR and re-enter the pipeline when a human invokes
+`ca77y-engineering:lead` again with the PR or its findings. Merging remains the human's.
 
 No CI or required status check is currently defined in the repository.
 
@@ -107,7 +114,7 @@ The `lead` alone may write:
 - commits in that worktree;
 - the story branch on `origin`, once when opening the PR and once per later fix round;
 - one PR against `master`; and
-- updates and comments on that same PR.
+- updates and comments on that same PR, including `@codex review` to re-fire review.
 
 Everything else is the human's:
 
