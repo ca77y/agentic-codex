@@ -17,6 +17,19 @@ import tomllib
 MARKER = "# managed-by: ca77y-engineering\n"
 REQUIRED = {"name", "description", "manual"}
 ALLOWED = REQUIRED
+PROOF_HEADING = "## Agent-definition refresh proof"
+PROOF_CHECK = "- `--check`: passed before installation"
+PROOF_INSTALL = "- install: completed for every managed TOML"
+PROOF_CONFIRMATION = "- post-install new-task confirmation: pending replacement lead"
+PROOF_AGENTS_HEADING = "- managed agents:"
+PROOF_AGENTS_COMPLETE = "- managed-agent records: complete"
+AGENT_PROOF_PATTERN = re.compile(
+    r"  - `(?P<name>[^`]+)`: (?P<action>installed|unchanged); "
+    r"source `(?P<source>[^`]+)`; installed `(?P<destination>[^`]+)`; "
+    r"source sha256 `(?P<source_sha256>[0-9a-f]{64})`; "
+    r"compiled sha256 `(?P<compiled_sha256>[0-9a-f]{64})`; "
+    r"installed sha256 `(?P<installed_sha256>[0-9a-f]{64})`"
+)
 
 
 def resources() -> list[Path]:
@@ -90,10 +103,34 @@ def source_identity() -> str:
     return f"git:{revision}; package-sha256:{package}"
 
 
-def verify_refresh_proof(ledger_path: Path, identity: str) -> None:
+def expected_proof_agents(paths: list[Path]) -> dict[str, dict[str, str]]:
+    expected: dict[str, dict[str, str]] = {}
+    target = Path.home() / ".codex" / "agents"
+    for source in paths:
+        content = compiled_agent(source)
+        name = str(tomllib.loads(content)["name"])
+        compiled_sha256 = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        expected[name] = {
+            "source": str(source.resolve()),
+            "destination": str((target / source.name).resolve()),
+            "source_sha256": sha256(source),
+            "compiled_sha256": compiled_sha256,
+            "installed_sha256": compiled_sha256,
+        }
+    return expected
+
+
+def proof_value(line: str, label: str, ledger_path: Path) -> str:
+    prefix = f"- {label}: `"
+    if not line.startswith(prefix) or not line.endswith("`"):
+        raise SystemExit(f"refresh proof has malformed {label}: {ledger_path}")
+    return line[len(prefix) : -1]
+
+
+def verify_refresh_proof(ledger_path: Path, identity: str, paths: list[Path]) -> None:
     validate_ledger_path(ledger_path)
     lines = ledger_path.read_text(encoding="utf-8").splitlines()
-    headings = [index for index, line in enumerate(lines) if line == "## Agent-definition refresh proof"]
+    headings = [index for index, line in enumerate(lines) if line == PROOF_HEADING]
     if not headings:
         raise SystemExit(f"refresh proof missing from ledger: {ledger_path}")
     start = headings[-1]
@@ -101,31 +138,67 @@ def verify_refresh_proof(ledger_path: Path, identity: str) -> None:
         (index for index in range(start + 1, len(lines)) if lines[index].startswith("## ")),
         len(lines),
     )
-    section = lines[start:end]
-    identity_line = next(
-        (line for line in section if line.startswith("- source identity: `")),
-        None,
-    )
-    expected_prefix = "- source identity: `"
-    if identity_line is None or not identity_line.endswith("`"):
-        raise SystemExit(f"refresh proof has no source identity: {ledger_path}")
-    recorded = identity_line[len(expected_prefix) : -1]
+    section = lines[start + 1 : end]
+    while section and not section[-1]:
+        section.pop()
+    expected_agents = expected_proof_agents(paths)
+    expected_length = 6 + len(expected_agents) + 1
+    if len(section) != expected_length:
+        raise SystemExit(
+            f"refresh proof schema is incomplete or has extra records: "
+            f"expected {expected_length} lines, found {len(section)} in {ledger_path}"
+        )
+
+    recorded = proof_value(section[0], "source identity", ledger_path)
     if recorded != identity:
         raise SystemExit(
             f"refresh proof source identity does not match current sources: {recorded} != {identity}"
         )
-    agent_lines = [line for line in section if line.startswith("  - `")]
-    if not agent_lines:
-        raise SystemExit(f"refresh proof has no managed agents: {ledger_path}")
-    pattern = re.compile(r"; installed `([^`]+)`; .*; installed sha256 `([0-9a-f]{64})`")
+
+    installer = proof_value(section[1], "installer", ledger_path)
+    expected_installer = str(Path(__file__).resolve())
+    if installer != expected_installer:
+        raise SystemExit(
+            f"refresh proof installer does not match current installer: "
+            f"{installer} != {expected_installer}"
+        )
+    fixed_records = [PROOF_CHECK, PROOF_INSTALL, PROOF_CONFIRMATION, PROOF_AGENTS_HEADING]
+    if section[2:6] != fixed_records:
+        raise SystemExit(f"refresh proof has malformed check, install, or managed-agent records: {ledger_path}")
+    if section[-1] != PROOF_AGENTS_COMPLETE:
+        raise SystemExit(f"refresh proof has no managed-agent completion record: {ledger_path}")
+
+    agent_lines = section[6:-1]
+    actual_agents: dict[str, dict[str, str]] = {}
     for line in agent_lines:
-        match = pattern.search(line)
+        match = AGENT_PROOF_PATTERN.fullmatch(line)
         if match is None:
             raise SystemExit(f"refresh proof has malformed managed-agent entry: {line}")
-        destination = Path(match.group(1))
-        if not destination.is_file() or sha256(destination) != match.group(2):
-            raise SystemExit(f"installed agent does not match refresh proof: {destination}")
-    print(f"refresh proof verified for {len(agent_lines)} managed agents: {ledger_path}")
+        fields = match.groupdict()
+        name = fields.pop("name")
+        fields.pop("action")
+        if name in actual_agents:
+            raise SystemExit(f"refresh proof has duplicate managed agent: {name}")
+        actual_agents[name] = fields
+
+    if set(actual_agents) != set(expected_agents):
+        missing = sorted(set(expected_agents) - set(actual_agents))
+        extra = sorted(set(actual_agents) - set(expected_agents))
+        raise SystemExit(
+            f"refresh proof managed-agent set does not match current resources; "
+            f"missing {missing}, extra {extra}"
+        )
+    for name, expected in expected_agents.items():
+        actual = actual_agents[name]
+        if actual != expected:
+            raise SystemExit(
+                f"refresh proof fields do not match current compiled agent {name}: "
+                f"{actual} != {expected}"
+            )
+        destination = Path(expected["destination"])
+        if not destination.is_file() or sha256(destination) != expected["compiled_sha256"]:
+            raise SystemExit(f"installed agent does not match current compiled output: {destination}")
+    print(f"refresh proof verified for {len(expected_agents)} managed agents: {ledger_path}")
 
 
 def source_data(path: Path) -> dict[str, object]:
@@ -281,13 +354,13 @@ def append_refresh_proof(ledger_path: Path, identity: str, results: list[dict[st
     validate_ledger_path(ledger_path)
     lines = [
         "",
-        "## Agent-definition refresh proof",
+        PROOF_HEADING,
         f"- source identity: `{identity}`",
         f"- installer: `{Path(__file__).resolve()}`",
-        "- `--check`: passed before installation",
-        "- install: completed for every managed TOML",
-        "- post-install new-task confirmation: pending replacement lead",
-        "- managed agents:",
+        PROOF_CHECK,
+        PROOF_INSTALL,
+        PROOF_CONFIRMATION,
+        PROOF_AGENTS_HEADING,
     ]
     for result in results:
         lines.extend(
@@ -295,7 +368,7 @@ def append_refresh_proof(ledger_path: Path, identity: str, results: list[dict[st
                 f"  - `{result['name']}`: {result['action']}; source `{result['source']}`; installed `{result['destination']}`; source sha256 `{result['source_sha256']}`; compiled sha256 `{result['compiled_sha256']}`; installed sha256 `{result['installed_sha256']}`",
             ]
         )
-    lines.append("")
+    lines.extend([PROOF_AGENTS_COMPLETE, ""])
     with ledger_path.open("a", encoding="utf-8") as handle:
         handle.write("\n".join(lines))
     print(f"refresh proof written to {ledger_path}")
@@ -321,7 +394,7 @@ def main() -> None:
     if args.verify_ledger_path is not None:
         if args.check or args.ledger_path is not None:
             raise SystemExit("--verify-ledger-path cannot be combined with installation options")
-        verify_refresh_proof(args.verify_ledger_path, identity)
+        verify_refresh_proof(args.verify_ledger_path, identity, paths)
         return
     if args.check:
         if args.ledger_path is not None:
