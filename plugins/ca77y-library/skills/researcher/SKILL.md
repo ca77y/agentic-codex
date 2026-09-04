@@ -17,7 +17,16 @@ Search, fetch, read, and follow leads directly — the default, and for most run
 
 The research library is an Obsidian vault maintained by the **library crew** — `librarian` (reads library knowledge, returns cited synthesis), `scribe` (ingests raw notes into wiki pages, links, taxonomy, index, and log; in **raw-note-only mode** writes raw notes only), `clerk` (audits library health). Dispatch them and relay the result; never edit library files yourself.
 
-**Dispatch first-class custom subagents by configured name**: `ca77y_library_librarian`, `ca77y_library_scribe`, `ca77y_library_clerk`, and `ca77y_library_researcher`. Their TOML definitions pin the role skill, model, and reasoning effort. If a required name is unavailable, stop before substituting a generic worker and ask the user to run `ca77y-library:install-subagents`. Before waiting, give the user a concise progress update; collect results with `wait_agent`, never shell polling.
+**Dispatch first-class custom subagents by configured name**: `ca77y_library_librarian`, `ca77y_library_scribe`, `ca77y_library_clerk`, and `ca77y_library_researcher`. Each installed TOML embeds that agent's complete role procedure and references; librarian, scribe, and clerk are not skills. Every fresh dispatch uses `fork_turns: "none"`, a self-contained prompt, and these spawn settings:
+
+| Role | Custom agent | Model | Effort |
+| --- | --- | --- | --- |
+| librarian | `ca77y_library_librarian` | `gpt-5.6-luna` | `xhigh` |
+| scribe | `ca77y_library_scribe` | `gpt-5.6-luna` | `xhigh` |
+| clerk | `ca77y_library_clerk` | `gpt-5.6-terra` | `medium` |
+| researcher | `ca77y_library_researcher` | `gpt-5.6-terra` | `high` |
+
+If a required name is unavailable, stop before substituting a generic worker and ask the user to run `ca77y-library:install-subagents`. Before waiting, give the user a concise progress update; collect results with `wait_agent`, never shell polling.
 
 Library agents already read the shared conventions at `library/_meta/librarian.md`; do not restate them. For a library **write** (scribe, or clerk applying fixes), just confirm in the dispatch that those conventions must be followed.
 

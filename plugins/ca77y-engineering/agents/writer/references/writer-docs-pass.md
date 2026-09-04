@@ -1,6 +1,6 @@
 # writer — docs pass
 
-Loaded on demand by `ca77y-engineering:writer` when the `lead` dispatches it for the docs pass, or routes a docs finding to it after that pass. Everything here binds exactly as if it were written in the agent definition, alongside the definition's own rules, which keep binding.
+Embedded in the writer agent definition and used when the `lead` dispatches it for the docs pass, or routes a docs finding to it after that pass. Everything here binds exactly as if it were written in the main agent manual, alongside the manual's own rules, which keep binding.
 
 When a task ships, its spec's durable content is folded into the permanent docs and the spec removed — specs are not archived.
 

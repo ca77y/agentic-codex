@@ -11,7 +11,7 @@ The review's findings come back to you as a **new invocation**: the user hands y
 
 ## Every agent is a fresh dispatch
 
-The previous run's agents are gone — their worker targets died with that session. Every dispatch this run is fresh and carries the spec path, the worktree path and its provisioning status, and the PR's findings. The coder is a fresh coder, routed from the spec's **Coding complexity** score exactly as step 4 does — no coder survives past the run that dispatched it; its dispatch opens on findings, so it names `references/coder-fix-round.md` — by path, never pasted — as the file the coder reads first, exactly as a findings round does per *Dispatch, resume, and collection*. Record each new worker target in the ledger when a dispatch produces one; within this run, later rounds resume or go fresh per *Dispatch, resume, and collection*, exactly as in a first run.
+The previous run's agents are gone — their worker targets died with that session. Every dispatch this run is fresh and carries the spec path, the worktree path and its provisioning status, and the PR's findings. The coder is a fresh coder, routed from the spec's **Coding complexity** score exactly as step 4 does — no coder survives past the run that dispatched it; identify the dispatch as a findings round so it applies the fix-round procedure embedded in its custom-agent definition. Record each new worker target in the ledger when a dispatch produces one; within this run, later rounds resume or go fresh per *Dispatch, resume, and collection*, exactly as in a first run.
 
 ## Route, fix, verify, push, re-fire
 

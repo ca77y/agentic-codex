@@ -14,7 +14,7 @@ An idea-to-open-PR pipeline:
 - `lead` orchestrates one task, one worktree, one branch, and one PR.
 - `board` authors or inspects `docs/BOARD.md`, the declaration for tracker bindings and write authority.
 - `forge` authors or inspects `docs/FORGE.md`, the declaration for git, remote, PR, and review bindings.
-- `writer`, `auditor`, `junior-coder`, `senior-coder`, and `qa` are first-class Codex custom subagents whose operating manuals are the matching role skills.
+- `writer`, `auditor`, `junior-coder`, `senior-coder`, and `qa` are isolated first-class Codex custom subagents. They are not callable skills; their complete operating manuals are embedded in their installed agent definitions.
 
 The pipeline never guesses a board or forge. A missing board means trackerless operation; a missing `docs/FORGE.md` stops the lead before any branch, worktree, or remote write.
 
@@ -24,27 +24,22 @@ A project-local Markdown research crew:
 
 - `bootstrap` creates the fixed `library/` structure and its `AGENTS.md` guidance.
 - `researcher` runs deep dives and orchestrates bounded parallel research.
-- `librarian` answers from the local wiki with provenance.
-- `scribe` persists raw notes and synthesized wiki pages.
-- `clerk` audits duplicates, broken links, citations, tags, and library hygiene.
+- `librarian`, `scribe`, and `clerk` are isolated, agent-only roles: they answer from the wiki, persist research, and audit library health without appearing as callable skills.
 
 The library plugin is standalone. Engineering uses it when installed and falls back to reading wiki pages directly when it is absent.
 
 ## Codex-native orchestration
 
-Each callable agent role has two Codex-native parts:
+User entry points and orchestration live in discoverable plugin skills. Leaf execution roles do not: each lives under the plugin's separate `agents/` tree with a non-discoverable `AGENT.md` source manual, and the managed installer compiles that manual plus every role reference into the installed TOML's `developer_instructions`.
 
-- a standalone custom-agent TOML, installed under `~/.codex/agents/`, which gives the subagent its stable name, model, reasoning effort, and identity;
-- a plugin role skill under `skills/<role>/SKILL.md`, which supplies the detailed operating procedure and packaged references.
+Orchestrators spawn those named, self-contained custom subagents with an explicit model and reasoning effort, continue resumable workers with `followup_task`, and collect final reports with `wait_agent`. Fresh custom-agent dispatches use `fork_turns: "none"` and a self-contained task instead of copying the main conversation. The parent sees only the agent's routing metadata; the full worker procedure exists only in the child context. Orchestrators explicitly refuse to replace a missing named agent with a generic worker.
 
-Orchestrators spawn those named custom subagents, continue resumable workers with `followup_task`, and collect final reports with `wait_agent`. They explicitly refuse to replace a missing named agent with a generic worker.
-
-The plugin/skill catalog at the top of a Codex task still lists the packaged skills; that catalog is not the subagent registry. The installed TOML definitions are selected through `spawn_agent`'s agent type and appear in the app's **Subagents** activity only after a role is spawned.
+The plugin/skill catalog at the top of a Codex task lists only user-callable workflows and orchestrators; it is not the subagent registry. The installed TOML definitions are selected through `spawn_agent`'s agent type and appear in the app's **Subagents** activity only after a role is spawned.
 
 Installed custom-agent names:
 
-- Engineering: `ca77y_engineering_writer`, `ca77y_engineering_auditor`, `ca77y_engineering_junior_coder`, `ca77y_engineering_senior_coder`, and `ca77y_engineering_qa`, plus the writer, auditor, senior-coder, and QA `*_fast` variants.
-- Library: `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`, plus `ca77y_library_clerk_fast`.
+- Engineering: `ca77y_engineering_writer`, `ca77y_engineering_auditor`, `ca77y_engineering_junior_coder`, `ca77y_engineering_senior_coder`, and `ca77y_engineering_qa`.
+- Library: `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`.
 
 The translated model ladder is:
 
@@ -54,7 +49,7 @@ The translated model ladder is:
 | balanced | `gpt-5.6-terra` |
 | fast | `gpt-5.6-luna` |
 
-The user-owned `--fast` flag steps a role down one model tier while preserving its reasoning effort.
+The user-owned `--fast` flag makes the orchestrator pass a model one tier lower to the same custom-agent name while preserving its reasoning effort. There are no duplicate fast agent definitions.
 
 ## Install locally
 
