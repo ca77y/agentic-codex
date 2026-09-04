@@ -34,6 +34,8 @@ User entry points and orchestration live in discoverable plugin skills. Leaf exe
 
 Orchestrators spawn those named, self-contained custom subagents with an explicit model and reasoning effort, continue resumable workers with `followup_task`, and collect final reports with `wait_agent`. Fresh custom-agent dispatches use `fork_turns: "none"` and a self-contained task instead of copying the main conversation. The parent sees only the agent's routing metadata; the full worker procedure exists only in the child context. Orchestrators explicitly refuse to replace a missing named agent with a generic worker.
 
+Before deliberately overlapping workers in one story worktree, the engineering lead records each live worker's planned edit paths and tells every new or resumed worker what the others are expected to edit. If it cannot name those paths, it sequences the dispatches. The five engineering delivery workers preserve and report modifications outside their assigned work instead of reverting them, and they verify a tool-attribution claim before recording it as fact. Workers act on the notice they receive; the lead remains responsible for detecting and deciding concurrency.
+
 The plugin/skill catalog at the top of a Codex task lists only user-callable workflows and orchestrators; it is not the subagent registry. The installed TOML definitions are selected through `spawn_agent`'s agent type and appear in the app's **Subagents** activity only after a role is spawned.
 
 Installed custom-agent names:
