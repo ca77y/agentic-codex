@@ -1,23 +1,20 @@
-# Invoked on an open PR — the fix run
+# Open-PR repair
 
-The review's findings come back to you as a **new invocation**: the user hands you the findings (or the PR) as the task. Treat it as a fix run, not a fresh story — same branch, same PR, never a second of either. Everything in `SKILL.md` still binds; this file is what changes.
+Read when the user supplies an existing PR or its review findings. Use the same branch and PR. The lead's authority, evidence rules, and attempt limit still apply.
 
-## Recover the workspace before anything else
+## Recover inputs
 
-- The durable record is the card's **handoff comment**, the **PR description** — reached through the forge declaration's *read* binding — and `git log`. Read these first; they hold what already shipped whether or not the worktree survived. A surviving `tmp/ledger.md` is a **bonus** cross-check, never something recovery depends on: the worktree — and every scratch file in it — dies with `git worktree remove` once the PR merges.
-- If the worktree still exists, reuse it. If not, recreate it on the **existing** branch — never branch again, never open a second PR.
-- Reused or recreated, verify the absolute path with `git worktree list`; every worker addresses it explicitly.
-- Recreate the ledger per *Context discipline* if it is gone, seeded from the durable record.
+1. Read BOARD and FORGE, then the PR and card handoff through their read bindings and `git -C <repository> log`. Recover the branch, original spec path and commit, completed rounds, and current findings. A surviving ledger is a cross-check, not the only durable record.
+2. Reuse the worktree or recreate it on the existing branch through the declared binding. Follow [workspace setup](workspace.md), including verification/reestablishment of dependency provisioning and ignored scratch state, before dispatch. Never assume a recovered worktree is provisioned.
+3. The docs pass normally deleted the live spec. Read its exact historical contents with `git -C <worktree> show <spec-commit>:<spec-path>` and save them, unchanged, with the file-editing tool as ignored `tmp/accepted-spec.md`. Record provenance in the ledger. Do not restore it to the live specs area or commit this historical copy. If refs are missing, locate the spec commit from branch history; if it cannot be recovered, ask the writer to reconstruct a live spec from durable task/card evidence and obtain readiness before implementation. Do not invent historical criteria or complexity.
+4. For unchanged scope, the historical copy is the repair baseline and supplies the complexity score. For changed scope/approach, dispatch the writer to create a live revision in the project's specs area, gate it, commit it, and use that live revision for downstream work. Keep the historical original untouched; before docs, save the newly approved revision separately as the current acceptance input and record its provenance. Retain the writer's board follow-ups.
 
-## Every agent is a fresh dispatch
+## Repair and verify
 
-The previous run's agents are gone — their worker targets died with that session. Every dispatch this run is fresh and carries the spec path, the worktree path and its provisioning status, and the PR's findings. The coder is a fresh coder, routed from the spec's **Coding complexity** score exactly as step 4 does — no coder survives past the run that dispatched it; identify the dispatch as a findings round so it applies the fix-round procedure embedded in its custom-agent definition. Record each new worker target in the ledger when a dispatch produces one; within this run, later rounds resume or go fresh per *Dispatch, resume, and collection*, exactly as in a first run.
+Start fresh workers in this new run, carrying spec path/provenance, worktree/status, prior commit refs, findings, and ownership. Route code to the scored coder, docs to a fresh docs writer, and scope changes through readiness. Later rounds follow the lead's normal resume rules.
 
-## Route, fix, verify, push, re-fire
+Commit repairs and QA-added tests before fresh reviewers. Code/executable changes require affected QA and acceptance; docs changes require affected acceptance. Run docs against changed behavior before acceptance, passing the saved spec when no live one exists. If a revised live spec was created, the docs pass converts and removes it; acceptance reads the saved approved revision against the final tree. Never claim old evidence covers a changed revision.
 
-- **Route each finding by owner** per *When a gate finds a problem*: code to the `coder`, docs to the `writer`, and an issue large enough to invalidate the approach back to the `writer` for a revised spec the `coder` rebuilds against. Retain any board follow-ups a revised spec surfaces, as step 3 does for every spec pass.
-- **Re-run `qa` over any code change**, then commit the round — one commit per fix round, per *The commit model* — and **push** it, since the branch now has a remote.
-- **Re-fire the review** through the declaration's *re-fire* binding. Where it binds none, push the round and say in the handoff that the review has to be fired by hand.
-- **Keep the PR description true.** If this run surfaces anything new the PR must carry — a board follow-up from a respec, a production hazard the coder reports while fixing — update the open description through the declaration's *update* binding as well as pushing the fix, so the description and your report both carry every follow-up and hazard whenever it was found. Where it binds no update, report what the description should now carry.
-- **The card stays at awaiting review** — it is already there, and it is not yours to move again.
-- **Hand off again** per *Final handoff*, and still do not wait for the review's result. The *3× rule* bounds a review finding that keeps returning exactly as it bounds any other problem.
+Push only after required evidence is current and blockers closed, at FORGE's declared timing. Update the existing description through its update binding to reflect the final result, validation, hazards, spec provenance, and follow-ups. If update is unbound, report the needed changes. Re-fire review only through its declared binding; otherwise report that a human must trigger it. Do not wait for the response.
+
+Leave the card at awaiting review; do not repeat start/review transitions. Return the existing PR link, repair outcome, evidence, and remaining limitations. A returning unresolved finding keeps its attempt count within this run; the three-attempt rule still stops publication.

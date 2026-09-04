@@ -10,20 +10,11 @@ Exactly `docs/BOARD.md` — a fixed path, like `docs/AGENTS_IMPROVEMENTS.md`. Do
 
 ## If the user says a declaration already exists
 
-Take them at their word — do not go hunting for it, and do not write a second one. All that matters is whether it is at the fixed path. Tell them so, and give them the fix:
+Inspect the supplied location read-only. During an authorized repair, move it to `docs/BOARD.md` or create a fixed-path pointer that fills only missing bindings; do not create competing declarations. Check `docs/ISSUE_TRACKING.md` when an upgrade appears to have lost a legacy board declaration. Read back the result in this invocation.
 
-**One old name is worth checking for by hand: `docs/ISSUE_TRACKING.md`.** That is where this declaration used to live, so a project set up against an earlier toolkit has a good declaration no agent reads — and because a board may be absent, its runs go trackerless without complaining. A user reporting the pipeline stopped seeing their board after an upgrade has this cause; the contents need no change.
+## Write only within the request
 
-1. **Move the file to `docs/BOARD.md`,** or write a new declaration there that points at the existing page and fills its gaps, per *Where it goes* above.
-2. Then invoke the skill again — it reads the file directly at that path and reports what it says, including anything left unbound.
-
-Offer to make the move yourself, subject to *Write it only when the user asked for it* below.
-
-## Write it only when the user asked for it
-
-- **The user invoked the skill directly** → interview them, write the file, and tell them what to check.
-- **A `lead` or `analyst` run is in progress** → never write it; put the draft in your report and let the user decide (per `SKILL.md`, *Two ways you are invoked*).
-- **Never write credentials, tokens, cookies, or private endpoints into it.** Name the mechanism and say it is already authenticated ("the Linear MCP server, connected in this workspace"). If a reader would need a secret to use what the file describes, describe it differently.
+Inspection does not authorize authoring. For an authorized write or repair, infer settled facts from project evidence and ask only for unresolved material choices. A delivery run discovering a missing declaration is not itself authorization. Never put credentials, tokens, cookies, or private endpoints in the declaration; name the already-authenticated mechanism.
 
 ## What it must answer
 

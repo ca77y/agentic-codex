@@ -51,17 +51,21 @@ fix(writer): name the pointer's target instead of its position
 ```
 
 Push once when the PR opens. Before that, the spec, build, and pre-ship round commits
-stay local in the worktree. After the PR exists, push each fix round when committed.
+stay local in the worktree. After the PR exists, push each fix round once its affected
+validation and acceptance checks pass. Intermediate repair checkpoints stay local;
+an unresolved blocking finding prevents publication.
 Never force-push, amend or rebase pushed history, or push `master`.
 
 ## Operations
 
-- **branch** — `git worktree add .worktrees/<branch> -b <branch> master`.
+- **branch** — create new work with
+  `git worktree add .worktrees/<branch> -b <branch> master`; recover a missing worktree
+  for an existing story branch with `git worktree add .worktrees/<branch> <branch>`.
 - **remove a worktree** — `git worktree remove <path>` — *the human's, after merge*.
 - **commit** — `git -C <worktree> add <paths>` (never `-f`), then
   `git -C <worktree> commit`.
 - **push** — `git -C <worktree> push -u origin <branch>` the first time, immediately
-  before the PR opens; `git -C <worktree> push` on each later fix round.
+  before the PR opens; `git -C <worktree> push` on each later verified fix round.
 - **open the change** —
   `gh pr create --repo ca77y/agentic-codex --base master --head <branch> --title <title> --body-file <path>`.
   Its output is the PR URL; that output is the link, never a constructed pattern.
@@ -112,7 +116,7 @@ The `lead` alone may write:
 
 - one story branch and one worktree under `.worktrees/`;
 - commits in that worktree;
-- the story branch on `origin`, once when opening the PR and once per later fix round;
+- the story branch on `origin`, once when opening the PR and once per later verified fix round;
 - one PR against `master`; and
 - updates and comments on that same PR, including `@codex review` to re-fire review.
 

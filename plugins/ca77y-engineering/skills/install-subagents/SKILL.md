@@ -1,16 +1,18 @@
 ---
 name: install-subagents
-description: Install or refresh ca77y-engineering's first-class Codex custom subagents under `~/.codex/agents/`. Use after plugin installation or when the agent definitions change. Validates managed TOML files and never overwrites an unrelated agent definition.
+description: Install or refresh ca77y-engineering's first-class Codex custom subagents under `~/.codex/agents/`. Use after plugin installation or when the agent definitions change. Validates managed files and never overwrites unrelated content.
 ---
 
-# Install ca77y engineering subagents
+# Install engineering subagents
 
-This plugin carries first-class Codex custom-agent source metadata plus non-discoverable manuals under the plugin's separate `agents/` tree because plugin manifests do not install custom agents directly. The installer compiles each complete manual and every role reference into one self-contained TOML under the personal Codex agent directory.
+Requires Python 3.11 or newer. The installer embeds each agent's core manual in its TOML and copies role references into `~/.codex/agents/.ca77y-engineering/<resource-stem>/references/`. The agent reads those files only when its procedure calls for them. Installed references survive removal of the source checkout or plugin cache.
 
 ## Workflow
 
 1. From this skill directory, run `python3 scripts/install_agents.py --check`.
 2. If validation passes, run `python3 scripts/install_agents.py`.
-3. Report every installed, unchanged, or removed stale managed agent and tell the user to start a new Codex task so the custom-agent catalog reloads.
+3. Report installed, unchanged, and removed files. Start a new Codex task to reload the custom-agent catalog.
 
-The installer validates that source metadata contains no model, reasoning, or `developer_instructions` override; those are owned by the orchestrator and compiler. It may update files carrying this plugin's `managed-by` marker and remove marked definitions that the plugin no longer ships. It must refuse a same-named file it does not own and must never remove an unmarked definition. Never edit `~/.codex/config.toml` as part of this workflow.
+For a read-only comparison with installed files, run `python3 scripts/install_agents.py --check-installed`. For a temporary installation, supply `--target /absolute/test/directory`. Run focused installer tests with `python3 scripts/test_install_agents.py`.
+
+Source metadata accepts only `name`, `description`, and `manual`; model, reasoning, and instruction overrides are rejected. Each plugin installs independently. The installer updates or removes only files with its ownership marker and refuses unmanaged destination conflicts before writing. Unmanaged files and other plugins' agents are preserved. Never edit `~/.codex/config.toml` as part of this workflow.

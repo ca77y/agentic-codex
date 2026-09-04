@@ -1,46 +1,21 @@
-# writer — docs pass
+# Docs pass
 
-Embedded in the writer agent definition and used when the `lead` dispatches it for the docs pass, or routes a docs finding to it after that pass. Everything here binds exactly as if it were written in the main agent manual, alongside the manual's own rules, which keep binding.
+Run after QA and before final acceptance. Read the spec, project documentation conventions and any project docs-writing skill, nearby docs, and stated product principles if present. Update existing homes rather than duplicate them; do not assume Obsidian, a particular architecture file, or a commit-message format.
 
-When a task ships, its spec's durable content is folded into the permanent docs and the spec removed — specs are not archived.
+## Establish the result
 
-1. Resolve the target: the shipped spec, the areas and behaviours the change touched, and which docs need to exist or change.
-2. Read the documentation conventions in your context (structure, where each kind of doc goes, its metadata), the project's docs-writing skill if any, the shipped spec, and the existing feature, flow, and design docs the change affects — update them rather than duplicating.
-3. Establish what shipped per *What shipped is the run's diff, not the spec* below, before authoring anything.
-4. Author or update docs per the project's per-document conventions (title, metadata block, scope; Mermaid for diagrams): capability behaviour, contracts, requirements → feature docs; user journeys, sequences, end-to-end walkthroughs → flow docs; UI/UX or system/architecture design → design docs.
-5. Convert the shipped spec: fold its durable requirements, scenarios, and design into the right home above, reconciling each durable claim against the run's diff; the feature docs are the settled source of truth — merge, never append blindly.
-6. Reconcile every paragraph you touch, per *Reconciling what you touch* below.
-7. **Remove the converted spec** from the specs area once its durable content has a home.
-8. Run the project's format or lint check over your own output, per *Checking your own output* below.
-9. Report back to the `lead`, which commits everything.
+Read `git -C <worktree> diff <spec-commit>..HEAD` to locate changes and `git -C <worktree> log <spec-commit>..HEAD` for intent. Then inspect the **resulting tree**, including unchanged callers/configuration relevant to each durable claim. The final tree establishes behavior; the diff alone does not. Report missing commit references and distinguish inspected tree evidence from claims resting on spec intent alone.
 
-## What shipped is the run's diff, not the spec
+Reconcile each spec claim against that evidence. Document intended behavior that exists; when the tree reveals a regression against the accepted contract, report it for repair instead of making it correct by documenting it. The lead routes behavioral defects back through affected QA and acceptance.
 
-The shipped spec and the shipped code **can disagree by design** — a later `qa` or acceptance-gate finding lands in the code, not the spec — so treat disagreement as normal. Before authoring anything, establish what shipped from two read-only git reads through the story worktree:
+## Convert and reconcile
 
-- `git -C <worktree> diff <spec-commit>..HEAD` — *what shipped*. At docs-pass time `HEAD` is the last pre-ship round commit; the ship commit does not exist yet, since this pass's output is part of it.
-- `git -C <worktree> log <spec-commit>..HEAD` — the round commits' messages, which per `docs/ARCHITECTURE.md`'s *The commit model* name the round's findings each applies and any tests `qa` added: the *reason* behind a difference.
+Fold capability contracts and requirements into the project’s feature docs, journeys into flow docs, and design rationale into design/architecture docs, using the categories the project actually has. Every paragraph, list item, table row and diagram touched must agree with the resulting tree and stated principles. Check surrounding docs for stale links, duplication, and contradictions introduced by the conversion. If a principle itself may be stale, report rather than rewrite the product’s purpose; if none exist, say that only the tree standard was available.
 
-Reconcile **each** durable claim against that diff before folding it into a durable doc. Where they disagree, **the diff is authoritative** — the doc records what the diff contains and the contradicted claim is not written as fact. Where the diff is silent, the spec's **intent** governs — goal, design rationale, requirements. Report every divergence in your Final report.
+Before removing the converted live spec, confirm the lead preserved the approved spec at `tmp/accepted-spec.md` in ignored run state with its recorded source commit. If the snapshot is missing, ask the lead to preserve it and continue independent docs work; do not delete the only acceptance standard. Once durable content has a home and the snapshot is confirmed, remove the live spec rather than archive it. Report conversion destinations, removal and snapshot path. Existing-PR repairs use the historical temporary spec recovered by the lead; do not remove that temporary acceptance input. Report unresolved claims before acceptance.
 
-When the spec commit or round commit references cannot be obtained — none named in the dispatch, the commit not in the worktree's history, `git` unrunnable there — say so in your report, naming what was missing and which claims therefore rest on the spec alone. Never report the spec as reconciled against the diff when it was not.
+## Self-check
 
-## Reconciling what you touch
+Run project formatting/lint/loader checks applicable to your changed documents, path-scoped or check-only; never a repository-wide write. Match semantic checks to the document even if the repository has code tests. No applicable command is **not defined**, not a failure. A defined command that cannot run or depends on unavailable provisioning is **unrunnable**.
 
-**The unit is the paragraph, and every sentence in it.** Touching a prose block, list item, table row, or diagram puts every sentence in it in scope, not only the lines you edited — editing a paragraph is vouching for it. A Mermaid node label or tree diagram asserting the superseded thing is a sentence here.
-
-**Two standards, both applied.** A sentence contradicting either the shipped system or the project's stated principles is corrected or removed — document only what was built; the principles standard is what makes a sentence about something the project decided not to build correctable. A contradiction is fixed even when the edit that surfaced it was unrelated. Where the principles live is discovered from project context, never hardcoded — the product or principles document where context names one, else the settled source-of-truth docs; where a project states none, say so in your report and check against the shipped tree alone — a sweep that could not run is never reported clean.
-
-**The guard: when the principle may be the stale side, report — do not rewrite it.** A principle states what the product is *for*; when you cannot tell which side is stale, or conclude the principle is, report it and leave the sentence as it stands.
-
-**Check the docs you touched against the wider tree too** — contradictions, stale cross-references, duplication, other docs the merged work now makes wrong — and fix them in the same pass.
-
-## Checking your own output
-
-Before reporting back, run the project's format or lint command — discovered from project context, no tool named here — over the files this pass authored, changed, or removed. Three outcomes:
-
-- **Defined and runnable** — run it, path-scoped where it accepts paths, else in check-only form; never a repo-wide write.
-- **Not defined** — a stated outcome, not a failure: skip it, say so in your report, never invent one.
-- **Defined but not trustworthy here** — the worktree's status is `provisioning failed` or absent and the command depends on it, or it fails to run at all: report that rather than concluding your docs are clean; the fetch-and-run ban holds. `no dependencies required` is not this case — trust it as `provisioned`.
-
-A failure naming any file in this pass's set is yours: fix and re-run until clean. One naming only files outside it is pre-existing — record and relay, never fix. Where a failure in your own set survives fixing, report **not clean** — file, failure, what you tried. This is a self-check over this pass's own files, not a gate: it judges no other agent's work and adds no round.
+Fix failures in your own files and rerun. Report unrelated failures without modifying them. Report **ran clean**, **failures found in this pass’s own files and re-run clean**, **not defined**, **unrunnable**, or **not clean** with file, failure and attempted remedy. This self-check covers your output; final acceptance follows it. Later contract/behavior changes invalidate affected QA and acceptance evidence; later docs changes invalidate affected acceptance evidence.

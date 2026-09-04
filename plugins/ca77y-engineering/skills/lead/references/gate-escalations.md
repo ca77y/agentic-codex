@@ -1,18 +1,15 @@
-# lead — gate escalations
+# Gate escalations
 
-Loaded on demand by `ca77y-engineering:lead` when a gate outcome escalates past plain routing: a problem survives the `junior-coder`'s three attempts (the promotion), the acceptance gate grades a criterion **mis-worded**, or the post-commit-1 lint floor is trusted and failing. Everything here binds exactly as if it were written in the skill definition, alongside the definition's own rules, which keep binding — *When a gate finds a problem* still routes, and *The 3× rule* is still the one hard stop.
+Read when a criterion is mis-worded, a problem reaches three unresolved attempts, or junior work needs promotion.
 
-## The promotion — the 3× rule's one carve-out
+## Attempt limit and promotion
 
-**Its one carve-out is a promotion, and it fires once.** Where the coder in play is the `junior-coder` and a problem survives its three attempts, dispatch a fresh `ca77y_engineering_senior_coder` custom subagent using the run's selected senior model and `high` effort to finish the task, with the fresh-dispatch payload from *Dispatch, resume, and collection* — identify it as a findings round so the senior applies its embedded fix-round procedure — the full findings set as it stands, and **what the junior already tried and why it did not close**. Record the promotion in the ledger with what tripped it. It replaces the tier: every later round goes to the senior, the score re-routes nothing, and the senior gets its **own** three attempts, after which the hard stop applies unmodified. A coder already the senior (by score, fallback, or promotion) has no second carve-out; the carve-out is the coder's alone — a spec gate or a returning review finding is bounded by the plain rule.
+After three unresolved attempts on the same blocking problem, stop and report it before publication. Commit attributable completed repairs under FORGE, but do not open/push a failed result around the blocker. No fourth attempt by the same tier.
 
-## A mis-worded criterion at the acceptance gate (step 6)
+The single exception is a junior coder's implementation problem: replace it with a fresh `ca77y_engineering_senior_coder`, using the run's senior model and `high` effort. Pass the findings, what junior tried, why it failed, spec and commit refs, worktree/status, and ownership. Record promotion; senior gets three attempts and remains the coder for the run. No further promotion or concurrent coder. Spec, QA-owned, and wording problems do not gain a coder promotion budget.
 
-A **mis-worded** finding routes to nobody in this run (the `coder` cannot reword a card, and `docs/BOARD.md` bars a post-build criterion correction). Escalate it to the human — the **one gate outcome the run proceeds past**, to the docs pass and the PR, once every other criterion is met. Name it in the PR description, the card's handoff comment (step 8), and the *Final handoff*; the correction belongs to a **later run's spec pass** on the corrected card.
+## Mis-worded acceptance
 
-## The post-commit-1 lint floor, trusted and failing (step 3)
+A mis-worded criterion is an unresolved acceptance-wording handoff, **not accepted work**. Do not quietly rewrite a post-build card or ask the coder to make the wording pass. Once every other criterion is met and no behavioral blocker remains, the run may proceed with this explicit exception.
 
-The floor itself is run per step 3 of the skill definition — once per run, immediately after commit 1, before the `coder` is dispatched, per *Running a project command*. This is what happens when it is trusted and failing:
-
-- **Which failure is this run's.** A failure naming **any path commit 1 landed** is this run's — route it to the `writer` per *When a gate finds a problem* and commit the fix as the spec-format-fix commit before dispatching the `coder`; a failure naming **only paths outside commit 1** is pre-existing — record and relay it, never route, fix, or stop on it.
-- **The floor-driven fix is re-formatted and backstopped.** Run the format step over the `writer`'s fix before committing it. Where it touched the *Acceptance criteria (verbatim transcription)* block, re-enter the spec-readiness gate first; where not, the acceptance gate's equality check (step 6) is the named backstop.
+Name the `ACn`, sub-case, evidence, and unresolved wording in the PR description, authorized card handoff, and final report. The human owns correction in a later run's spec pass. Keep the auditor's not-ready verdict visible; never relabel it passed. Any unverified or defective behavior remains subject to the normal blocking rules.

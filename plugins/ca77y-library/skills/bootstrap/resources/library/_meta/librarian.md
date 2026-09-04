@@ -21,13 +21,13 @@ Maintain `library/` as a Markdown-first research wiki. Role-specific workflows c
 ## Obsidian conventions
 
 1. Use wikilinks for internal pages and Markdown links for external URLs.
-2. Index every raw and wiki content page in `_meta/index.md`, with a plain-Markdown fallback even when Dataview also lists it.
+2. Full ingest indexes raw and wiki content pages in `_meta/index.md`, with a plain-Markdown fallback even when Dataview also lists it. Raw-note-only batches defer this shared write to the coordinating parent.
 3. Use block IDs and links such as `[[source-note#^claim-id]]` for granular citations.
 4. Give content pages frontmatter with `title`, `type`, `tags`, `aliases`, `created`, `updated`, `up`, and `related`. Raw notes also record `source` and `accessed`; wiki pages record `confidence`.
-5. Register every tag in `_meta/taxonomy.md`; use lowercase kebab-case.
+5. Use lowercase kebab-case tags registered in `_meta/taxonomy.md`. Raw-note-only writers use existing tags and report proposed additions for full ingest.
 6. Use Obsidian callouts for summaries, source excerpts, caveats, and open questions.
 7. Remove all template placeholders before finishing a page.
-8. Update `_meta/log.md` after ingest, synthesis, taxonomy, or maintenance work.
+8. Update `_meta/log.md` after full ingest, synthesis, taxonomy, or authorized maintenance work. Raw-note-only writers return deferred log information in their report; they never write shared metadata.
 9. Clean up temporary helper files before handing work back.
 
 ## Plugins

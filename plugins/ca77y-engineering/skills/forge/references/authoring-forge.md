@@ -12,11 +12,11 @@ Exactly `docs/FORGE.md` — a fixed path. Do not rename it, split it across file
 
 ## If the user says a declaration already exists
 
-Take them at their word — do not hunt for it, and do not write a second one. Only its path matters. Give them the fix: **move the file to `docs/FORGE.md`**, or write a new declaration there that points at the existing page and fills its gaps, per *Where it goes* — then invoke the skill again to read it back, including anything left unbound. Offer to make the move yourself, under the same rule as everything else here: only when they invoked the skill directly, never mid-run.
+Inspect the supplied location read-only. During an authorized repair, move it to `docs/FORGE.md` or add a fixed-path pointer that fills missing bindings; do not duplicate them. Read back the result in this invocation.
 
-## Write it only when the user asked for it
+## Write only within the request
 
-Per `SKILL.md`'s *Two ways you are invoked*: interview the user, write the file, and tell them what to check — only on their direct request (a `lead` that stopped for a missing declaration and sent them here counts, since no run is in progress by then), never mid-run, and **never so a stopped `lead` can continue**. **Never write credentials, tokens, cookies, credentialed clone URLs, or private endpoints into it.** Name the mechanism and say it is already authenticated ("the `gh` CLI, already logged in on this machine"). If a reader would need a secret to use what the file describes, describe it differently.
+Inspection does not authorize authoring. For a user-authorized write or repair, infer facts from repository evidence and ask only for unresolved material decisions. A lead's missing-declaration stop does not authorize guessed bindings. Never write credentials, tokens, cookies, credentialed clone URLs, or private endpoints; describe the configured authentication mechanism.
 
 ## What it must answer
 
@@ -27,9 +27,9 @@ Ten questions. Ask the user only what the project cannot tell you — read the r
 3. **Where do story worktrees live, and is that directory in the committed ignore file?** If not, report it: a missing entry lets an ordinary commit step sweep a whole worktree into a story commit.
 4. **How is a branch named?** The source — a card field (say which, read through `docs/BOARD.md`), a slug, a prefix convention — and the fallback for a run that names no card.
 5. **What convention do commit messages follow, and what must a message name?** Read three real subjects off a **story branch**, not the default branch: a squash-merging repository's default branch shows change titles, not the commit convention.
-6. **When does a push happen, and what may never be rewritten?**
+6. **When does a push happen, and what may never be rewritten?** Distinguish local checkpoint commits from verified rounds eligible for push; an unresolved blocking round stays local.
 7. **Is there a forge? Which one, what does it call a change, and how is it reached?** An already-authenticated CLI, an already-connected MCP server, a documented endpoint, or none. Where two mechanisms are present, say which the bindings use and that the other is deliberately unused.
-8. **What is the concrete call for each operation?** *branch · remove a worktree · commit · push · open the change · update it · comment on it · read it back · re-fire the review · merge.* Mark one *not available* rather than omitting it.
+8. **What is the concrete call for each operation?** *branch · remove a worktree · commit · push · open the change · update it · comment on it · read it back · re-fire the review · merge.* The branch binding must cover both a new story branch and worktree recovery on an existing branch. Mark unavailable variants or operations explicitly rather than omitting them.
 9. **What must a change's description carry, and what does it open against?** The section set, the title's shape, whether a later fix round appends or rewrites, and which forge metadata is deliberately unused.
 10. **Who reviews an opened change, how is that review fired and re-fired — and what may the pipeline write?** The exhaustive authority, then what stays the human's: merging, force-pushing, rewriting pushed history, deleting refs, tagging, releasing.
 
@@ -67,11 +67,13 @@ No credentials here.> | *there is no forge*
 <The message convention, with two or three real subjects from a story branch. What a
 message must additionally name.>
 
-<When a push happens.> Never <the rewrites this project forbids>.
+<When a verified round is pushed; which checkpoint commits stay local pending validation.>
+Never <the rewrites this project forbids>.
 
 ## Operations
 
-- **branch** — <call>
+- **branch** — new story: <call creating a branch and worktree>; recovery: <call creating
+  a worktree on the existing story branch, without creating another branch>.
 - **remove a worktree** — <call> — *<whose, and when>*
 - **commit** — <call>
 - **push** — <call> | *not available*

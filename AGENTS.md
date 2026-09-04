@@ -13,9 +13,10 @@ This repository contains the Codex-native rebuild of the ca77y agentic toolkit.
 
 - Keep each plugin name identical across its folder, marketplace entry, and `.codex-plugin/plugin.json`.
 - Put every user-callable workflow and orchestrator in `skills/<role>/SKILL.md`.
-- Put an isolated leaf custom-agent's operating procedure in `agents/<role>/AGENT.md`; never put an agent-only role under `skills/`. The managed installer compiles that manual and its references into the installed agent TOML.
+- Put an isolated leaf custom-agent's core procedure in `agents/<role>/AGENT.md`; never put an agent-only role under `skills/`. The managed installer embeds the core manual in the agent TOML and installs supporting references as separate files.
 - Put distributable custom-agent TOML resources under the plugin's `install-subagents/resources/`, then install them into `~/.codex/agents/` with the managed installer. Plugin manifests do not install project or personal custom agents directly.
 - Keep role-specific references beside the owning `SKILL.md` or `AGENT.md` and use relative paths from that manual.
+- Simplify the normal workflow. Put edge cases and mode-specific detail in references with explicit read conditions; never load every reference by default. Add machinery only when a simpler procedure cannot preserve the required behavior.
 - Add code comments only when the code itself cannot clearly explain the behavior or rationale; do not narrate self-explanatory code.
 - Keep documentation focused on the system as it exists now. It may briefly identify gaps or future plans, but it is neither a historical record nor a record of the discussions that led to a decision.
 - Orchestrators must dispatch the configured custom-agent name, never a generic worker standing in for a missing role. Use Codex collaboration terms and tools: `spawn_agent`, `followup_task`, `wait_agent`, and worker targets.
