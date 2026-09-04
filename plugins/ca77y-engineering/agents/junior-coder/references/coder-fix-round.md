@@ -1,6 +1,6 @@
 # junior-coder / senior-coder — findings round
 
-Loaded on demand by `ca77y-engineering:junior-coder` and `ca77y-engineering:senior-coder` when the `lead` routes findings to them — by resume or by a fresh dispatch carrying findings, including a dispatch that opens on an already-open PR's review findings. Everything here binds exactly as if it were written in the agent definition, alongside the definition's own rules, which keep binding.
+Embedded in both coder agent definitions and used when the `lead` routes findings to one of them — by resume or by a fresh dispatch carrying findings, including a dispatch that opens on an already-open PR's review findings. Everything here binds exactly as if it were written in the main agent manual, alongside the manual's own rules, which keep binding.
 
 ## The round
 

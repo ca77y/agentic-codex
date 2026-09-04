@@ -1,6 +1,6 @@
 # auditor — the acceptance gate
 
-Loaded on demand by `ca77y-engineering:auditor` when the `lead` dispatches it as the acceptance gate over finished work. Everything here binds exactly as if it were written in the agent definition, alongside the definition's own rules, which keep binding.
+Embedded in the auditor agent definition and used when the `lead` dispatches it as the acceptance gate over finished work. Everything here binds exactly as if it were written in the main agent manual, alongside the manual's own rules, which keep binding.
 
 ## The acceptance gate
 

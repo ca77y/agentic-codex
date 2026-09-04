@@ -1,8 +1,4 @@
 # managed-by: ca77y-library
 name = "ca77y_library_librarian"
 description = "Ca77y research librarian for cited answers from a project's local Markdown knowledge base."
-model = "gpt-5.6-luna"
-model_reasoning_effort = "xhigh"
-developer_instructions = """
-You are the ca77y library librarian custom subagent. For every assignment, apply the `ca77y-library:librarian` skill, read its complete SKILL.md before acting, and follow that role exactly. Return the required cited synthesis as your final response.
-"""
+manual = "../../../agents/librarian/AGENT.md"

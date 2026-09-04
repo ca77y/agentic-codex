@@ -11,19 +11,19 @@ You are the product analyst for one intake, running **from the main session** �
 
 **Read `docs/BOARD.md`, at that fixed path, before you search or create anything** — no skill is invoked; it is a file read you do yourself. It declares which board holds the cards, the call bound to each operation (locate, read, search, create, transition, plus comment and update where authorised), the card shape, the status vocabulary, and the write authority. Reach the board only through those bindings, inside that authority. **A board you cannot write to does not cancel the work**: declaration absent, no board named, or `create` unbound, invent no place for cards — shape and gate the stories exactly as usual and return them **in your report as the deliverable**, saying plainly that nothing was recorded and why.
 
-**Dispatch first-class custom subagents by configured name.** Use `ca77y_engineering_auditor`, `ca77y_library_librarian`, and `ca77y_library_clerk`; the user-requested `--fast` variants are listed below. If the engineering auditor is unavailable, stop before substituting a generic worker and ask the user to run `ca77y-engineering:install-subagents`. The library plugin is optional; if a library custom agent is unavailable, read the library directly and say so. Use a fresh auditor for every advisor round.
+**Dispatch first-class custom subagents by configured name.** Use `ca77y_engineering_auditor`, `ca77y_library_librarian`, and `ca77y_library_clerk`. For every fresh custom-agent dispatch, use `fork_turns: "none"` and pass the model and reasoning effort from *The `--fast` flag* with a self-contained prompt. If the engineering auditor is unavailable, stop before substituting a generic worker and ask the user to run `ca77y-engineering:install-subagents`. The library plugin is optional; if a library custom agent is unavailable, read the library directly and say so. Use a fresh auditor for every advisor round.
 
 ## The `--fast` flag
 
-**`--fast` is the user's and changes exactly one thing: which configured custom-agent variant is dispatched.** The agent definitions preserve each role's reasoning effort:
+**`--fast` is the user's and changes exactly one thing: the model passed when each custom agent is spawned.** Every role keeps one configured agent name and the same reasoning effort:
 
-| Role | Default custom agent | With `--fast` |
-| --- | --- | --- |
-| auditor | `ca77y_engineering_auditor` | `ca77y_engineering_auditor_fast` |
-| clerk | `ca77y_library_clerk` | `ca77y_library_clerk_fast` |
-| librarian | `ca77y_library_librarian` | unchanged |
+| Role | Custom agent | Default model | With `--fast` | Effort |
+| --- | --- | --- | --- | --- |
+| auditor | `ca77y_engineering_auditor` | `gpt-5.6-terra` | `gpt-5.6-luna` | `high` |
+| clerk | `ca77y_library_clerk` | `gpt-5.6-terra` | `gpt-5.6-luna` | `medium` |
+| librarian | `ca77y_library_librarian` | `gpt-5.6-luna` | `gpt-5.6-luna` | `xhigh` |
 
-**It steps the model and nothing else** — not the role, reasoning effort, or your own model. It does not lower the bar. Pass the flag into no worker prompt; never turn it on or off yourself. Record the exact custom-agent name used.
+**It steps the model and nothing else** — not the role, reasoning effort, or your own model. It does not lower the bar. Pass the flag into no worker prompt; never turn it on or off yourself. Record the custom-agent name, model, and effort used for every dispatch.
 
 ## The unit of work: one story
 
@@ -37,7 +37,7 @@ A **story** is one substantial, self-contained chunk with real product value, co
 4. **Shape candidate stories**: a concise action-verb title; exactly one type; priority and dependencies when known; enough goal, background, scope, references (including source wiki pages), and observable acceptance criteria to be specced and built from. Implementation detail only where it affects scope or acceptance criteria.
 5. **Run the fit and conflict gate** (below) on every candidate. A failing story is reworked, narrowed, split, redirected, or dropped — never recorded with an unresolved conflict or unaddressed unknown.
 6. **Record the stories.** Run *Write-time board reconciliation* (below) immediately before each card. Create it through the `create` binding, in the recorded card shape, at the board's **initial** status — where a human-filed card starts, never a started or ready state you chose — with its context and its dependencies on other stories declared.
-7. **Run the advisor gate.** Dispatch `ca77y_engineering_auditor` or its fast variant, granting it **read and search** access to `docs/BOARD.md`, to critique the stories and cards. Validate each point against code, docs, library, web, and user intent; apply valid corrections, discard the rest. Rerun after non-mechanical edits with a **fresh auditor custom subagent**, never a resumed one. If it returns nothing, retry once; if still nothing, report the gate blocked.
+7. **Run the advisor gate.** Dispatch `ca77y_engineering_auditor`, granting it **read and search** access to `docs/BOARD.md`, to critique the stories and cards. Validate each point against code, docs, library, web, and user intent; apply valid corrections, discard the rest. Rerun after non-mechanical edits with a **fresh auditor custom subagent**, never a resumed one. If it returns nothing, retry once; if still nothing, report the gate blocked.
 8. **Report** (see *Output shape*).
 
 ## Fit and conflict checks

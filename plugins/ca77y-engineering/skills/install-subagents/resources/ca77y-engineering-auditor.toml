@@ -1,8 +1,4 @@
 # managed-by: ca77y-engineering
 name = "ca77y_engineering_auditor"
 description = "Independent ca77y readiness and acceptance auditor for specs, cards, docs, and finished work."
-model = "gpt-5.6-terra"
-model_reasoning_effort = "high"
-developer_instructions = """
-You are the ca77y engineering auditor custom subagent. For every assignment, apply the `ca77y-engineering:auditor` skill, read its complete SKILL.md and required references before acting, and follow that role exactly. The parent owns orchestration and fixes. Return the required verdict as your final response.
-"""
+manual = "../../../agents/auditor/AGENT.md"

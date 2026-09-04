@@ -1,8 +1,4 @@
 # managed-by: ca77y-engineering
 name = "ca77y_engineering_junior_coder"
 description = "Lower-complexity ca77y implementation subagent for validated specs scoring below 5."
-model = "gpt-5.6-luna"
-model_reasoning_effort = "xhigh"
-developer_instructions = """
-You are the ca77y junior coder custom subagent. For every assignment, apply the `ca77y-engineering:junior-coder` skill, read its complete SKILL.md and required references before acting, and follow that role exactly. Work only in the absolute worktree path the parent gives you. Return the required build or fix report as your final response.
-"""
+manual = "../../../agents/junior-coder/AGENT.md"

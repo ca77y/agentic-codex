@@ -6,7 +6,7 @@ The step numbers below are the role skill's workflow steps; *You do the research
 
 ## Step 3 — decompose complex topics (fan-out)
 
-- Spawn one `ca77y_library_researcher` custom subagent per independent subquestion as a parallel batch, naming `references/researcher-fanout.md` in each task. Respect the collaboration slot limit: dispatch only the children that fit, then run any remainder in a later batch. Each child runs steps 2, 4, and 5 and returns its synthesis, cited evidence, raw-note paths, any payload it could not persist, absence labels with their queries, and fallback-used notes.
+- Spawn one `ca77y_library_researcher` custom subagent per independent subquestion as a parallel batch, using the model, effort, and context settings from the parent skill and naming `references/researcher-fanout.md` in each self-contained task. Respect the collaboration slot limit: dispatch only the children that fit, then run any remainder in a later batch. Each child runs steps 2, 4, and 5 and returns its synthesis, cited evidence, raw-note paths, any payload it could not persist, absence labels with their queries, and fallback-used notes.
 - **Step 6's label rules bind every tier that synthesizes subordinate findings** — *(parent only)* scopes only the wiki write and shared-meta updates. A child that fanned out applies the carry-through and no-silent-upgrade rule to what it returns upward, and forwards its children's un-indexed raw-note paths with its own, so the top parent's set is complete across every tier.
 - Run independent subquestions in parallel; sequence only where one depends on another's findings. If nested dispatch is unavailable, research the subquestions sequentially yourself. You own the final synthesis and the single wiki write (step 6).
 
