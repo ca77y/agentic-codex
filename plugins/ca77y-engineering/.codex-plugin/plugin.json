@@ -1,6 +1,6 @@
 {
   "name": "ca77y-engineering",
-  "version": "2.9.0+codex.20260904175100",
+  "version": "2.9.0+codex.20260831193233",
   "description": "Idea-to-shipped engineering pipeline for Codex, with product shaping, specs, tiered implementation, QA, acceptance gates, docs, and forge handoff.",
   "author": {
     "name": "ca77y"
