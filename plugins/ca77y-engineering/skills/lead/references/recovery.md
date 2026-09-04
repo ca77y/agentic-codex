@@ -6,11 +6,19 @@ Read this when a worker yields no usable report or when the lead continues after
 
 Check ground truth before any replacement dispatch:
 
-1. Use `list_agents` to inspect the worker target and `wait_agent` once more when it is still running.
+1. Use `list_agents` to inspect the worker target, then use `wait_agent` once to
+   collect its final report even when the target already reads completed or errored. A
+   terminal status does not prove the report has been delivered. If collection yields a
+   usable report, route it as a worker or gate result; do not classify the dispatch as
+   infrastructure.
 2. Inspect `git -C <worktree> status --short` and the files the worker was asked to produce.
 3. If the worker is stuck and must be stopped, use `interrupt_agent`, then inspect the tree again before deciding whether to continue it with `followup_task` or replace it.
 
-Work present on disk means the worker may still be live or may have completed without a useful final report. Collect and preserve that work; never silently spawn a replacement onto files another live worker may still be editing. Only when the worker is no longer active and nothing on disk accounts for the task may you spawn a fresh role worker.
+Work present on disk means the worker may still be live or may have completed without a
+useful final report. Collect and preserve that work; never silently spawn a replacement
+onto files another live worker may still be editing. Only after the terminal-report
+collection check yields no usable report, the worker is no longer active, and nothing
+on disk accounts for the task may you spawn a fresh role worker.
 
 ## A scratch-file write fails
 

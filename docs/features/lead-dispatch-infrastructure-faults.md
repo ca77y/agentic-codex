@@ -13,12 +13,23 @@ work.
 
 A dispatch is an infrastructure fault only when the fresh `spawn_agent` call or a
 `followup_task` delivery fails before the worker has supplied any report of work, the
-recovery procedure has ruled out a live worker, delayed final report, and attributable
-worktree artifact, and no worker report remains to route. A worker's lack of any
-report is the classification boundary.
+recovery procedure has ruled out a live worker, a delayed final report after terminal
+status, and an attributable worktree artifact, and no worker report remains to route.
+The lead performs the final-report collection check even for a completed or errored
+worker. A worker's lack of any report is the classification boundary.
 
 The lead records a confirmed infrastructure fault separately from gate rounds, coder
 attempts, and the 3× counter. It consumes no attempt.
+
+## Current custom-agent definitions
+
+A selectable custom-agent name proves that the catalog has a TOML for that role; it
+does not prove that the TOML contains the current role procedure. When a
+ca77y-engineering update changes `agents/` or the `install-subagents` resources, the
+user runs `ca77y-engineering:install-subagents` from the updated plugin and starts a
+new Codex task before the lead's first dispatch. Until that refresh is confirmed, the
+lead stops rather than dispatching a legacy definition that may refer to a removed role
+skill.
 
 ## First confirmed fault
 
