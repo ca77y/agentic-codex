@@ -23,7 +23,7 @@ This repository contains the Codex-native rebuild of the ca77y agentic toolkit.
 
 ## Validation
 
-Run the skill quick validator for every skill directory, then run the plugin validator for both plugin roots. After a marketplace-backed update, use the plugin-creator cachebuster and reinstall flow.
+Run the skill quick validator for every skill directory, then run the plugin validator for both plugin roots. Plugin versions use plain semantic versioning. Bump the appropriate major, minor, or patch version once when preparing a release; do not add timestamp or cachebuster build metadata.
 
 ## Library
 
