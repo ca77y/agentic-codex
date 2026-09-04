@@ -218,13 +218,13 @@ mechanism that those manuals already require.
 
 ## Tasks
 
-- [ ] **Coder:** update `plugins/ca77y-engineering/skills/lead/SKILL.md` with the
+- [x] **Coder:** update `plugins/ca77y-engineering/skills/lead/SKILL.md` with the
   concurrent-dispatch contract in R1, applying it to fresh and resumed dispatches and
   preserving the lead's ownership of concurrency detection.
-- [ ] **Coder:** add the R2 and R3 shared-worktree rule to each of the five canonical
+- [x] **Coder:** add the R2 and R3 shared-worktree rule to each of the five canonical
   engineering `AGENT.md` manuals; preserve the managed resource descriptions because
   none states behavior the new rule falsifies.
-- [ ] **Coder:** retain the coder and QA manuals' existing temporary owned-revert
+- [x] **Coder:** retain the coder and QA manuals' existing temporary owned-revert
   workflow while making the general preservation rule apply to an unexplained change
   from any path.
 - [ ] **QA:** perform the R1–R4 document inspections and the installer, all-skill
