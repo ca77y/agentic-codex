@@ -47,14 +47,17 @@ sequence `--check`, installation with `--ledger-path
 restart; the installer writes the pre-restart proof. The refresh state is durable in
 the ledger: each session, including a replacement task, reads an agent-definition
 state entry that either ties a no-definition-change check to the last valid proof or
-records the updated plugin source revision, absolute installer path, successful
+records the current source identity, absolute installer path, successful
 `--check` and install result for every managed TOML, refreshed names, and confirmation
-that the replacement task started after installation. The replacement lead appends
-that confirmation after opening the same worktree and ledger, before its first
-dispatch. A new run with no prior proof cannot use a prompt-local acknowledgment or
-no-change claim. The source revision must still cover the current `agents/` and
-`install-subagents` resources. Until that state is confirmed, the lead stops rather
-than dispatching a legacy definition that may refer to a removed role skill.
+that the replacement task started after installation. The source identity combines
+the Git revision with a deterministic package digest when Git is available, and uses
+the package digest alone for a packaged copy without `.git`; an unavailable identity
+cannot produce a successful proof. The replacement lead runs the installer's read-only
+ledger verifier against that identity and appends confirmation only after it passes,
+after opening the same worktree and ledger and before its first dispatch. A new run
+with no prior proof cannot use a prompt-local acknowledgment or no-change claim.
+Until that state is confirmed, the lead stops rather than dispatching a legacy
+definition that may refer to a removed role skill.
 
 ## First confirmed fault
 

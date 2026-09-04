@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import tomllib
@@ -27,6 +28,24 @@ def plugin_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def identity_files() -> list[Path]:
+    root = plugin_root()
+    source_roots = [root / "agents", root / "skills" / "install-subagents"]
+    missing = [path for path in source_roots if not path.is_dir()]
+    if missing:
+        joined = ", ".join(str(path) for path in missing)
+        raise SystemExit(f"source identity unavailable; missing source roots: {joined}")
+    files = {
+        path
+        for source_root in source_roots
+        for path in source_root.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
+    }
+    if not files:
+        raise SystemExit("source identity unavailable; no source files found")
+    return sorted(files, key=lambda path: path.relative_to(root).as_posix())
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -35,7 +54,21 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def source_revision() -> str:
+def package_digest() -> str:
+    root = plugin_root()
+    digest = hashlib.sha256()
+    for path in identity_files():
+        relative = path.relative_to(root).as_posix().encode("utf-8")
+        digest.update(relative)
+        digest.update(b"\0")
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def git_revision() -> str:
     try:
         result = subprocess.run(
             ["git", "-C", str(plugin_root()), "rev-parse", "HEAD"],
@@ -47,6 +80,52 @@ def source_revision() -> str:
         return "unavailable"
     revision = result.stdout.strip()
     return revision or "unavailable"
+
+
+def source_identity() -> str:
+    package = package_digest()
+    revision = git_revision()
+    if revision == "unavailable":
+        return f"package-sha256:{package}"
+    return f"git:{revision}; package-sha256:{package}"
+
+
+def verify_refresh_proof(ledger_path: Path, identity: str) -> None:
+    validate_ledger_path(ledger_path)
+    lines = ledger_path.read_text(encoding="utf-8").splitlines()
+    headings = [index for index, line in enumerate(lines) if line == "## Agent-definition refresh proof"]
+    if not headings:
+        raise SystemExit(f"refresh proof missing from ledger: {ledger_path}")
+    start = headings[-1]
+    end = next(
+        (index for index in range(start + 1, len(lines)) if lines[index].startswith("## ")),
+        len(lines),
+    )
+    section = lines[start:end]
+    identity_line = next(
+        (line for line in section if line.startswith("- source identity: `")),
+        None,
+    )
+    expected_prefix = "- source identity: `"
+    if identity_line is None or not identity_line.endswith("`"):
+        raise SystemExit(f"refresh proof has no source identity: {ledger_path}")
+    recorded = identity_line[len(expected_prefix) : -1]
+    if recorded != identity:
+        raise SystemExit(
+            f"refresh proof source identity does not match current sources: {recorded} != {identity}"
+        )
+    agent_lines = [line for line in section if line.startswith("  - `")]
+    if not agent_lines:
+        raise SystemExit(f"refresh proof has no managed agents: {ledger_path}")
+    pattern = re.compile(r"; installed `([^`]+)`; .*; installed sha256 `([0-9a-f]{64})`")
+    for line in agent_lines:
+        match = pattern.search(line)
+        if match is None:
+            raise SystemExit(f"refresh proof has malformed managed-agent entry: {line}")
+        destination = Path(match.group(1))
+        if not destination.is_file() or sha256(destination) != match.group(2):
+            raise SystemExit(f"installed agent does not match refresh proof: {destination}")
+    print(f"refresh proof verified for {len(agent_lines)} managed agents: {ledger_path}")
 
 
 def source_data(path: Path) -> dict[str, object]:
@@ -198,12 +277,12 @@ def validate_ledger_path(ledger_path: Path) -> None:
         raise SystemExit(f"ledger parent does not exist: {ledger_path.parent}")
 
 
-def append_refresh_proof(ledger_path: Path, results: list[dict[str, str]]) -> None:
+def append_refresh_proof(ledger_path: Path, identity: str, results: list[dict[str, str]]) -> None:
     validate_ledger_path(ledger_path)
     lines = [
         "",
         "## Agent-definition refresh proof",
-        f"- source revision: `{source_revision()}`",
+        f"- source identity: `{identity}`",
         f"- installer: `{Path(__file__).resolve()}`",
         "- `--check`: passed before installation",
         "- install: completed for every managed TOML",
@@ -230,9 +309,20 @@ def main() -> None:
         type=Path,
         help="absolute story-worktree ledger path to receive the refresh proof",
     )
+    parser.add_argument(
+        "--verify-ledger-path",
+        type=Path,
+        help="read-only absolute story-worktree ledger path whose refresh proof should be verified",
+    )
     args = parser.parse_args()
     paths = resources()
     validate(paths)
+    identity = source_identity()
+    if args.verify_ledger_path is not None:
+        if args.check or args.ledger_path is not None:
+            raise SystemExit("--verify-ledger-path cannot be combined with installation options")
+        verify_refresh_proof(args.verify_ledger_path, identity)
+        return
     if args.check:
         if args.ledger_path is not None:
             raise SystemExit("--ledger-path requires installation, not --check")
@@ -242,7 +332,7 @@ def main() -> None:
         validate_ledger_path(args.ledger_path)
     results = install(paths)
     if args.ledger_path is not None:
-        append_refresh_proof(args.ledger_path, results)
+        append_refresh_proof(args.ledger_path, identity, results)
 
 
 if __name__ == "__main__":

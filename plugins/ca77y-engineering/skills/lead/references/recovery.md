@@ -46,8 +46,9 @@ The ledger (`tmp/ledger.md`) plus `git log` are the source of truth. Before acti
 - the coder tier, any senior fallback, and any promotion already made;
 - the worker targets still available for `followup_task`;
 - the durable agent-definition state, either its no-definition-change determination or
-  refresh proof including source revision, installer result for every managed TOML,
-  managed names, and post-install new-task confirmation;
+  refresh proof including source identity, installer result for every managed TOML,
+  managed names, and post-install new-task confirmation; the replacement lead verifies
+  that identity with the installer's read-only ledger check before dispatch;
 - the absolute story worktree and `tmp/ledger.md` paths, plus each dispatch's target
   status, host error, and artifact baseline;
 - commits and round counters, so the 3x rule includes every attempt;
