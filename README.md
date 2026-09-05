@@ -43,13 +43,15 @@ Diagnostics are optional installation utilities: `--check` inspects source witho
 Use Python 3.11 or newer with PyYAML available. Run every skill quick validator, then both plugin validators and installer suites:
 
 ```bash
-for skill in plugins/*/skills/*/; do
-  python3 /Users/catty/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$skill" || break
-done
-python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-engineering
-python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-library
-python3 plugins/ca77y-engineering/skills/install-subagents/scripts/test_install_agents.py
-python3 plugins/ca77y-library/skills/install-subagents/scripts/test_install_agents.py
+(
+  for skill in plugins/*/skills/*/; do
+    python3 /Users/catty/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$skill" || exit $?
+  done
+  python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-engineering || exit $?
+  python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-library || exit $?
+  python3 plugins/ca77y-engineering/skills/install-subagents/scripts/test_install_agents.py || exit $?
+  python3 plugins/ca77y-library/skills/install-subagents/scripts/test_install_agents.py || exit $?
+)
 ```
 
 The installer suites exercise real plugin resources and isolated destinations, including stale cleanup, unmanaged conflicts, drift, and reference survival after source removal. Mechanical checks establish format and packaging validity; bounded scenarios assess instruction behavior separately. The acceptance source is [`docs/specs/plugin-specialists-and-skill-integration.md`](docs/specs/plugin-specialists-and-skill-integration.md).

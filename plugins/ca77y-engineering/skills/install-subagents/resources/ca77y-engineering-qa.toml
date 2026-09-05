@@ -1,4 +1,4 @@
 # managed-by: ca77y-engineering
 name = "ca77y_engineering_qa"
-description = "Independently review code, execute tests, assess regression coverage and test adequacy, and validate implementation acceptance against the validated spec. Missing tests are findings for the coder; do not author or repair tests yourself. Read [behavior and regression evidence](references/behavior.md) for implementation validation."
+description = "Independently review code, execute tests, assess regression coverage and test adequacy, and validate implementation acceptance against the validated spec. Missing tests are findings for the coder; do not author or repair tests yourself."
 manual = "../../../agents/qa/AGENT.md"
