@@ -1,15 +1,15 @@
 {
   "name": "ca77y-library",
   "version": "1.6.0",
-  "description": "Codex research crew for growing and maintaining a cited Markdown and Obsidian knowledge library inside a project.",
+  "description": "Investigate questions with persisted cited evidence, or answer from an existing project-local Markdown library.",
   "author": {
     "name": "ca77y"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Ca77y Library",
-    "shortDescription": "Research deeply and maintain a cited project library.",
-    "longDescription": "A Codex-native research crew with named researcher, librarian, scribe, and clerk custom subagents plus bootstrap and orchestration skills. It persists provenance, synthesizes wiki pages, and audits library health in place.",
+    "shortDescription": "Research with provenance; ask the existing library.",
+    "longDescription": "Research investigates questions and persists reusable raw evidence and cited synthesis. Ask answers from existing library content without initiating research or maintenance. Fresh report-only validation, dynamic model selection, and shared bounded recovery support both outcomes. Bootstrap, setup, and legacy workflows remain available.",
     "developerName": "ca77y",
     "category": "Productivity",
     "capabilities": [
@@ -19,9 +19,9 @@
       "Multi-agent"
     ],
     "defaultPrompt": [
-      "Bootstrap a research library in this project.",
-      "Research this topic and grow the project library.",
-      "Audit the project's research library."
+      "Research this question and save the evidence and synthesis in the library.",
+      "Answer this question using the existing library.",
+      "Bootstrap a research library in this project."
     ]
   }
 }

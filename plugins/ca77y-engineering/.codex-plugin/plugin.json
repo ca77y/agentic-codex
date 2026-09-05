@@ -1,15 +1,15 @@
 {
   "name": "ca77y-engineering",
   "version": "2.10.0",
-  "description": "Idea-to-shipped engineering pipeline for Codex, with product shaping, specs, tiered implementation, QA, acceptance gates, docs, and forge handoff.",
+  "description": "Outcome-driven proposal shaping and verified delivery for Codex, with independent validation and project-declared authority.",
   "author": {
     "name": "ca77y"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Ca77y Engineering",
-    "shortDescription": "Shape a task, build it, gate it, and open one PR.",
-    "longDescription": "A Codex-native, multi-agent product engineering pipeline. Analyst and lead skills orchestrate named custom writer, coder, QA, and auditor subagents while respecting project-declared board and forge bindings.",
+    "shortDescription": "Shape proposals and deliver verified, authorized changes.",
+    "longDescription": "Shape turns ideas into scoped proposals. Deliver implements or repairs changes through the requested authorized endpoint. Fresh report-only validators check specifications and candidates; dynamic model selection and a shared three-attempt stop rule support the main agent. Board, forge, setup, and legacy workflows remain available.",
     "developerName": "ca77y",
     "category": "Productivity",
     "capabilities": [
@@ -18,9 +18,9 @@
       "Multi-agent"
     ],
     "defaultPrompt": [
-      "Shape this idea into a board-ready story.",
-      "Take this task from spec to an open PR.",
-      "Help me declare this project's board or forge."
+      "Shape this idea into a proposal with observable acceptance criteria.",
+      "Implement this change locally and verify it.",
+      "Repair the findings on this existing PR."
     ]
   }
 }

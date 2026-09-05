@@ -1,0 +1,4 @@
+# managed-by: ca77y-engineering
+name = "ca77y_engineering_validator"
+description = "Independent report-only validation of specifications, candidates, answers, and supporting evidence for ca77y-engineering entry points."
+manual = "../../../agents/validator/AGENT.md"
