@@ -6,14 +6,21 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import tempfile
 import tomllib
 
 
-PLUGIN = json.loads((Path(__file__).resolve().parents[3] / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))["name"]
+MANIFEST = json.loads((Path(__file__).resolve().parents[3] / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
+PLUGIN = MANIFEST["name"]
+VERSION = MANIFEST.get("version")
+if not isinstance(VERSION, str) or not re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", VERSION):
+    raise SystemExit("plugin manifest version must be plain major.minor.patch")
 MARKER = f"# managed-by: {PLUGIN}\n"
 REFERENCE_MARKER = f"<!-- managed-by: {PLUGIN} -->\n"
+VERSION_MARKER = f"# plugin-version: {VERSION}\n"
+REFERENCE_VERSION_MARKER = f"<!-- plugin-version: {VERSION} -->\n"
 REQUIRED = {"name", "description", "manual"}
 
 
@@ -79,10 +86,10 @@ def build(paths: list[Path], target: Path) -> dict[Path, str]:
             if not reference.resolve().is_relative_to(source.resolve().parents[3]):
                 raise SystemExit(f"reference escapes plugin root: {reference}")
             files[base / reference.relative_to(manual.parent)] = (
-                REFERENCE_MARKER + reference.read_text(encoding="utf-8")
+                REFERENCE_MARKER + REFERENCE_VERSION_MARKER + reference.read_text(encoding="utf-8")
             )
         files[target / source.name] = (
-            MARKER
+            MARKER + VERSION_MARKER
             + f"name = {json.dumps(data['name'])}\n"
             + f"description = {json.dumps(data['description'])}\n"
             + f"developer_instructions = {json.dumps(instructions)}\n"

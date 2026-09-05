@@ -6,6 +6,8 @@ import io
 import json
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import tempfile
 import tomllib
 import unittest
@@ -23,7 +25,7 @@ class InstallerTests(unittest.TestCase):
         self.plugin = self.root / "plugin-cache-version"
         manifest = self.plugin / ".codex-plugin/plugin.json"
         manifest.parent.mkdir(parents=True)
-        manifest.write_text(json.dumps({"name": PLUGIN}))
+        manifest.write_text(json.dumps({"name": PLUGIN, "version": "1.2.3"}))
         copied = self.plugin / "skills/install-subagents/scripts/install_agents.py"
         copied.parent.mkdir(parents=True)
         shutil.copyfile(SCRIPT, copied)
@@ -57,6 +59,73 @@ class InstallerTests(unittest.TestCase):
         self.assertIn(str(self.installed_reference.parents[1]), instructions)
         shutil.rmtree(self.plugin)
         self.assertIn("Rare instructions", self.installed_reference.read_text())
+
+    def run_installer(self, *args):
+        return subprocess.run(
+            [sys.executable, str(self.plugin / "skills/install-subagents/scripts/install_agents.py"),
+             "--target", str(self.target), *args], capture_output=True, text=True,
+        )
+
+    def test_manifest_version_is_recorded_without_runtime_settings(self):
+        self.install()
+        definition = (self.target / "sample.toml").read_text()
+        self.assertTrue(definition.startswith(f"# managed-by: {PLUGIN}\n# plugin-version: 1.2.3\n"))
+        self.assertEqual(set(tomllib.loads(definition)), {"name", "description", "developer_instructions"})
+        self.assertTrue(self.installed_reference.read_text().startswith(
+            f"<!-- managed-by: {PLUGIN} -->\n<!-- plugin-version: 1.2.3 -->\n"))
+
+    def test_version_only_upgrade_drift_and_idempotence(self):
+        self.install()
+        before = {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in self.target.rglob("*") if p.is_file()}
+        manifest = self.plugin / ".codex-plugin/plugin.json"
+        manifest.write_text(json.dumps({"name": PLUGIN, "version": "2.0.0"}))
+        check = self.run_installer("--check-installed")
+        self.assertNotEqual(check.returncode, 0)
+        for path in before:
+            self.assertIn(str(path), check.stderr)
+        self.assertEqual(before, {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in before})
+        upgrade = self.run_installer()
+        self.assertEqual(upgrade.returncode, 0, upgrade.stderr)
+        self.assertIn("# plugin-version: 2.0.0\n", (self.target / "sample.toml").read_text())
+        self.assertIn("<!-- plugin-version: 2.0.0 -->\n", self.installed_reference.read_text())
+        upgraded = {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in before}
+        repeat = self.run_installer()
+        self.assertEqual(repeat.returncode, 0, repeat.stderr)
+        self.assertEqual(len(repeat.stdout.splitlines()), len(before))
+        self.assertTrue(all(line.startswith("unchanged ") for line in repeat.stdout.splitlines()))
+        self.assertEqual(upgraded, {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in before})
+        self.assertEqual(self.run_installer("--check-installed").returncode, 0)
+
+    def test_unversioned_files_upgrade_and_stale_versions_are_cleaned(self):
+        self.install()
+        for path in (self.target / "sample.toml", self.installed_reference):
+            path.write_text("".join(line for line in path.read_text().splitlines(keepends=True)
+                                    if "plugin-version:" not in line))
+        stale = []
+        for suffix, version in (("legacy", ""), ("versioned", "0.9.0")):
+            definition = self.target / f"{suffix}.toml"
+            definition.write_text(self.installer.MARKER + (f"# plugin-version: {version}\n" if version else ""))
+            reference = self.installed_reference.with_name(f"{suffix}.md")
+            reference.write_text(self.installer.REFERENCE_MARKER +
+                                 (f"<!-- plugin-version: {version} -->\n" if version else ""))
+            stale.extend((definition, reference))
+        self.install()
+        self.assertIn("# plugin-version: 1.2.3\n", (self.target / "sample.toml").read_text())
+        self.assertIn("<!-- plugin-version: 1.2.3 -->\n", self.installed_reference.read_text())
+        self.assertTrue(all(not path.exists() for path in stale))
+
+    def test_missing_or_invalid_manifest_version_fails_before_writes(self):
+        manifest = self.plugin / ".codex-plugin/plugin.json"
+        for version in (None, "", 123, "1.2", "01.2.3", "1.2.3-beta", "1.2.3+build", "1.2.3\n", "1.2.3 -->"):
+            with self.subTest(version=version):
+                data = {"name": PLUGIN}
+                if version is not None:
+                    data["version"] = version
+                manifest.write_text(json.dumps(data))
+                result = self.run_installer()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("plugin manifest version must be plain major.minor.patch", result.stderr)
+                self.assertFalse(self.target.exists())
 
     def test_nested_reference_paths_are_preserved(self):
         nested = self.reference.parent / "details/extra.md"
@@ -196,12 +265,15 @@ class ActualResourceTests(unittest.TestCase):
             self.assertEqual(data["manual"], f"../../../agents/{role}/AGENT.md")
             self.assertEqual(data["name"], (PLUGIN + "_" + role).replace("-", "_"))
             manual = self.plugin / "agents" / role / "AGENT.md"
-            installed = tomllib.loads((self.target / source.name).read_text())
+            definition = (self.target / source.name).read_text()
+            version = json.loads((self.plugin / ".codex-plugin/plugin.json").read_text())["version"]
+            self.assertTrue(definition.startswith(f"# managed-by: {PLUGIN}\n# plugin-version: {version}\n"))
+            installed = tomllib.loads(definition)
             self.assertEqual(set(installed), {"name", "description", "developer_instructions"})
             self.assertTrue(installed["developer_instructions"].endswith(self.installer.without_frontmatter(manual.read_text()) + "\n"))
             for ref in (manual.parent / "references").rglob("*.md"):
                 target_ref = self.target / f".{PLUGIN}" / source.stem / ref.relative_to(manual.parent)
-                self.assertEqual(target_ref.read_text(), self.installer.REFERENCE_MARKER + ref.read_text())
+                self.assertEqual(target_ref.read_text(), self.installer.REFERENCE_MARKER + self.installer.REFERENCE_VERSION_MARKER + ref.read_text())
                 self.assertIn(str(target_ref.parents[1]), installed["developer_instructions"])
                 references.append((target_ref, target_ref.read_bytes()))
         self.assertTrue(references)

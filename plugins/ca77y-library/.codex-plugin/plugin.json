@@ -1,6 +1,6 @@
 {
   "name": "ca77y-library",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Investigate questions with persisted cited evidence, or answer from an existing project-local Markdown library.",
   "author": {
     "name": "ca77y"

@@ -26,6 +26,8 @@ This repository contains the Codex-native rebuild of the ca77y agentic toolkit.
 
 Run the skill quick validator for every skill directory, then run the plugin validator for both plugin roots. Plugin versions use plain semantic versioning. Bump the appropriate major, minor, or patch version once when preparing a release; do not add timestamp or cachebuster build metadata.
 
+Each plugin's `.codex-plugin/plugin.json` is the single source of truth for its version. The managed agent installer reads that manifest and writes `plugin-version` comments into generated agent TOML and copied Markdown references. Keep `managed-by` ownership markers independent of version. Do not hardcode release versions in this file, agent resources, or installer code, or edit generated version comments by hand. After a release version bump, refresh installed agents with the managed installer from the updated plugin source so their metadata reflects that release.
+
 ## Library
 
 Read `library/_meta/librarian.md` before library work. Preserve raw notes and cite durable claims back to sources; no always-on service is required for the library to work.

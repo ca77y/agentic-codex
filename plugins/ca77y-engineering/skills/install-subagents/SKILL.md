@@ -9,6 +9,8 @@ Requires Python 3.11 or newer. From this skill directory run `python3 scripts/in
 
 The installer embeds each leaf's core `AGENT.md` and copies references into `~/.codex/agents/.ca77y-engineering/<resource-stem>/references/`, preserving paths after source/cache removal. References load only when their core procedure calls for them. Source metadata contains only the managed marker, `name`, `description`, and `manual`; generated definitions have no fixed model or reasoning fields.
 
+Generated definitions include a `# plugin-version: <version>` comment after the ownership marker; copied references include `<!-- plugin-version: <version> -->`. The version comes from `.codex-plugin/plugin.json` and must be plain `major.minor.patch`. It identifies the source manifest release, not a content digest. Ownership remains independent of version, so existing unversioned files upgrade normally and version-only changes are reported by `--check-installed`.
+
 Marker-based updates and stale-file cleanup affect only this plugin’s owned files. Unmanaged conflicts are refused before writes; other-plugin and unmanaged files are preserved. Do not edit `~/.codex/config.toml`.
 
 ## Requested diagnostics
