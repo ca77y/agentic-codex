@@ -1,7 +1,5 @@
 # Raw-note-only persistence
 
-Identify the assigned files and extract source claims before writing. Use the raw-note template and record URL/source, access date, excerpts or key claims, and uncertainty. New notes and appended findings are allowed; preserve existing source text. Concurrent assignments must have disjoint paths; report a collision instead of overwriting another writer's work.
+Use the project's raw-note template and only the assigned exclusive paths. Preserve source text and provenance; append new findings when authorized. Record source identity, dates, supporting passages, claim relationships, and uncertainty. Distinguish quotations and inference. An unfetched lead carries its URL and reason, never invented contents.
 
-Capture sources actually attempted but not retrieved in a nonempty `> [!warning] Rejected sources` callout with each URL and reason. Do not infer their contents.
-
-Only raw notes may change. Use existing taxonomy tags; propose useful additions in the report for full ingest. Shared index, taxonomy, and log updates are deferred even if library conventions normally request them. Check authored frontmatter, links, and citations, then return every written path and the deferred work to the caller. Never write a process-feedback file.
+Use existing taxonomy tags and return proposed additions separately. Defer index, taxonomy, and log changes to the sole integration owner. Return produced paths and deferred metadata for completion before final validation. Leave frontmatter, links, and citation checks to a fresh clerk.

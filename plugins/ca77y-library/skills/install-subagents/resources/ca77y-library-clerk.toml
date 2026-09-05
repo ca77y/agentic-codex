@@ -1,4 +1,4 @@
 # managed-by: ca77y-library
 name = "ca77y_library_clerk"
-description = "Ca77y library-health auditor for links, citations, taxonomy, duplicates, and raw-note hygiene."
+description = "Independently assess research-spec readiness, answer support, provenance, inference labels, contradictions, frontmatter, citations, affected links, and shared metadata. Validate library installation and packaging without the engineering plugin. Always report only; never repair the library being evaluated."
 manual = "../../../agents/clerk/AGENT.md"

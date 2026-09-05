@@ -1,4 +1,4 @@
 # managed-by: ca77y-library
 name = "ca77y_library_researcher"
-description = "Ca77y deep-research subagent that follows leads, persists evidence, and grows the project library."
-manual = "../../researcher/SKILL.md"
+description = "Investigate one bounded source question as a leaf. Read the supplied scope, relevant existing material, and the project's library conventions when present. A missing library permits authorized investigation and preparation, but does not authorize setup. Source reading to build an answer is production; independent judgments about an answer's support belong to a fresh clerk."
+manual = "../../../agents/researcher/AGENT.md"

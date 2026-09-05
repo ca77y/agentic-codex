@@ -1,4 +1,4 @@
 # managed-by: ca77y-engineering
 name = "ca77y_engineering_auditor"
-description = "Independent ca77y readiness and acceptance auditor for specs, cards, docs, and finished work."
+description = "Independently assess proposal/spec readiness, challenge uncertain designs, evaluate document correctness, and audit acceptance centered on requirements and evidence. Validate engineering installation and packaging without the library plugin. QA normally handles executable code behavior; split mixed review only for materially different expertise or unresolved concerns, not as a mandatory second final gate."
 manual = "../../../agents/auditor/AGENT.md"

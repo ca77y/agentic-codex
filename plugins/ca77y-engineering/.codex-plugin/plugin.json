@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Ca77y Engineering",
     "shortDescription": "Shape proposals and deliver verified, authorized changes.",
-    "longDescription": "Shape turns ideas into scoped proposals. Deliver implements or repairs changes through the requested authorized endpoint. Fresh report-only validators check specifications and candidates; dynamic model selection and a shared three-attempt stop rule support the main agent. Board, forge, setup, and legacy workflows remain available.",
+    "longDescription": "Shape proposals and deliver authorized changes with bounded coder and writer support and fresh QA or auditor validation. Bootstrap configures project board and forge declarations once. Dynamic model selection and one shared three-attempt stop rule support the main agent.",
     "developerName": "ca77y",
     "category": "Productivity",
     "capabilities": [

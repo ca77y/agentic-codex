@@ -1,4 +1,0 @@
-# managed-by: ca77y-engineering
-name = "ca77y_engineering_senior_coder"
-description = "Higher-complexity ca77y implementation subagent for difficult, ambiguous, or promoted work."
-manual = "../../../agents/coder/AGENT.md"

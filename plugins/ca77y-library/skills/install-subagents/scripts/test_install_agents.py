@@ -148,5 +148,120 @@ class InstallerTests(unittest.TestCase):
             self.build()
 
 
+    def test_orchestration_skill_cannot_be_a_core_manual(self):
+        skill = self.manual.with_name("SKILL.md")
+        self.manual.rename(skill)
+        self.source.write_text(self.source.read_text().replace("AGENT.md", "SKILL.md"))
+        with self.assertRaisesRegex(SystemExit, "missing agent manual"):
+            self.build()
+
+
+class ActualResourceTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.source_root = SCRIPT.resolve().parents[3]
+        self.plugin = self.root / PLUGIN
+        shutil.copytree(self.source_root, self.plugin, ignore=shutil.ignore_patterns("__pycache__"))
+        self.installer = self.load(self.plugin)
+        self.target = self.root / "agents"
+        self.roles = {
+            "ca77y-engineering": {"coder", "qa", "writer", "auditor"},
+            "ca77y-library": {"researcher", "librarian", "scribe", "clerk"},
+        }[PLUGIN]
+
+    @staticmethod
+    def load(plugin):
+        spec = importlib.util.spec_from_file_location("actual_installer", plugin / "skills/install-subagents/scripts/install_agents.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def install(self, module=None, check=False):
+        module = module or self.installer
+        with contextlib.redirect_stdout(io.StringIO()):
+            module.install(module.build(module.resources(), self.target), self.target, check=check)
+
+    def test_actual_inventory_core_and_reference_survival(self):
+        sources = self.installer.resources()
+        self.assertEqual({p.name for p in sources}, {f"{PLUGIN}-{role}.toml" for role in self.roles})
+        self.install()
+        self.install(check=True)
+        self.assertEqual(len(list(self.target.glob("*.toml"))), 4)
+        references = []
+        for source in sources:
+            data = self.installer.source_data(source)
+            role = source.stem.removeprefix(PLUGIN + "-")
+            self.assertEqual(data["manual"], f"../../../agents/{role}/AGENT.md")
+            self.assertEqual(data["name"], (PLUGIN + "_" + role).replace("-", "_"))
+            manual = self.plugin / "agents" / role / "AGENT.md"
+            installed = tomllib.loads((self.target / source.name).read_text())
+            self.assertEqual(set(installed), {"name", "description", "developer_instructions"})
+            self.assertTrue(installed["developer_instructions"].endswith(self.installer.without_frontmatter(manual.read_text()) + "\n"))
+            for ref in (manual.parent / "references").rglob("*.md"):
+                target_ref = self.target / f".{PLUGIN}" / source.stem / ref.relative_to(manual.parent)
+                self.assertEqual(target_ref.read_text(), self.installer.REFERENCE_MARKER + ref.read_text())
+                self.assertIn(str(target_ref.parents[1]), installed["developer_instructions"])
+                references.append((target_ref, target_ref.read_bytes()))
+        self.assertTrue(references)
+        shutil.rmtree(self.plugin)
+        for ref, content in references:
+            self.assertEqual(ref.read_bytes(), content)
+
+    def test_actual_stale_cleanup_and_unmanaged_preservation(self):
+        self.install()
+        stale_role = self.target / f"{PLUGIN}-retired.toml"
+        stale_role.write_text(self.installer.MARKER + 'name = "retired"\n')
+        stale_ref = self.target / f".{PLUGIN}/retired/references/old.md"
+        stale_ref.parent.mkdir(parents=True)
+        stale_ref.write_text(self.installer.REFERENCE_MARKER + "Retired reference")
+        personal = stale_ref.with_name("personal.md")
+        personal.write_text("User-owned note")
+        other = self.target / "another-plugin.toml"
+        other.write_text('# managed-by: another-plugin\nname = "other"\n')
+        before = {p: p.read_bytes() for p in (personal, other)}
+        with self.assertRaisesRegex(SystemExit, "installed files differ"):
+            self.install(check=True)
+        self.assertTrue(stale_role.exists())
+        self.assertTrue(stale_ref.exists())
+        self.install()
+        self.assertFalse(stale_role.exists())
+        self.assertFalse(stale_ref.exists())
+        self.assertEqual(before, {p: p.read_bytes() for p in before})
+
+    def test_actual_conflict_refusal_before_partial_install(self):
+        self.target.mkdir()
+        conflict = self.target / self.installer.resources()[-1].name
+        conflict.write_bytes(b"personal definition")
+        with self.assertRaisesRegex(SystemExit, "refusing to overwrite"):
+            self.install()
+        self.assertEqual(list(self.target.iterdir()), [conflict])
+        self.assertEqual(conflict.read_bytes(), b"personal definition")
+
+    def test_actual_drift_check_does_not_repair(self):
+        self.install()
+        changed = self.target / self.installer.resources()[0].name
+        changed.write_text(changed.read_text() + "# local drift\n")
+        before = {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in self.target.rglob("*") if p.is_file()}
+        with self.assertRaisesRegex(SystemExit, "installed files differ"):
+            self.install(check=True)
+        self.assertEqual(before, {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in before})
+
+    def test_actual_plugins_coexist_when_both_sources_are_present(self):
+        other_name = "ca77y-library" if PLUGIN == "ca77y-engineering" else "ca77y-engineering"
+        other_source = self.source_root.parent / other_name
+        if not other_source.is_dir():
+            self.skipTest("Other plugin absent; this plugin installs independently")
+        other = self.load(other_source)
+        self.install(other)
+        before = {p: p.read_bytes() for p in self.target.rglob("*") if p.is_file()}
+        self.install()
+        self.install(check=True)
+        self.install(other, check=True)
+        self.assertEqual(len(list(self.target.glob("*.toml"))), 8)
+        self.assertEqual(before, {p: p.read_bytes() for p in before})
+
+
 if __name__ == "__main__":
     unittest.main()

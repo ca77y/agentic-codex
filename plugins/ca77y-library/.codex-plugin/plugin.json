@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Ca77y Library",
     "shortDescription": "Research with provenance; ask the existing library.",
-    "longDescription": "Research investigates questions and persists reusable raw evidence and cited synthesis. Ask answers from existing library content without initiating research or maintenance. Fresh report-only validation, dynamic model selection, and shared bounded recovery support both outcomes. Bootstrap, setup, and legacy workflows remain available.",
+    "longDescription": "Research new sources with provenance or ask the existing library. Bounded researcher, librarian, and scribe support is optional; fresh clerks validate specs, answers, and artifacts. Bootstrap creates the Markdown library once. Dynamic model selection and one shared three-attempt stop rule support the main agent.",
     "developerName": "ca77y",
     "category": "Productivity",
     "capabilities": [

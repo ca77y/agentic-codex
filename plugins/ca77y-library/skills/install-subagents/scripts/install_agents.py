@@ -40,7 +40,7 @@ def resolve_manual(path: Path, value: str) -> Path:
     manual = (path.parent / value).resolve()
     if not manual.is_relative_to(path.resolve().parents[3]):
         raise SystemExit(f"manual escapes plugin root: {path}")
-    if not manual.is_file() or manual.name not in {"AGENT.md", "SKILL.md"}:
+    if not manual.is_file() or manual.name != "AGENT.md":
         raise SystemExit(f"missing agent manual: {manual}")
     return manual
 
@@ -72,7 +72,7 @@ def build(paths: list[Path], target: Path) -> dict[Path, str]:
             "Your core role procedure follows. Follow it directly; do not load a skill to define your role. "
             f"Read references only when the procedure calls for them. Resolve references/<file> under {base}. "
             "Resolve relative links inside a reference from that reference's directory. "
-            "A reference to AGENT.md or SKILL.md as the role procedure means the core procedure below.\n\n"
+            "A reference to AGENT.md as the role procedure means the core procedure below.\n\n"
             + without_frontmatter(manual.read_text(encoding="utf-8")) + "\n"
         )
         for reference in sorted((manual.parent / "references").rglob("*.md")):

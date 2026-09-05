@@ -11,6 +11,7 @@ Replace these tokens wherever they occur in newly copied files:
 | `{{PROJECT_NAME}}` | Name from the request or project metadata |
 | `{{TODAY}}` | One current `YYYY-MM-DD` date for the pass |
 | `{{DOMAIN_ONE_LINER}}` | Supported scope or neutral project research scope |
+| `{{SOURCE_PROVIDER_GUIDANCE}}` | Supplied project provider and unavailable-access rule; when none is configured, state that new internet investigation requires choosing a provider, without inventing one |
 | `{{DOMAIN_TAGS}}` | Established tags as Markdown bullets, or an HTML comment that domain tags start empty |
 
 Preserve `<% ... %>` Templater expressions in `_meta/templates/`; they are intentional. Existing files with unresolved tokens are reported gaps, not permission to overwrite.

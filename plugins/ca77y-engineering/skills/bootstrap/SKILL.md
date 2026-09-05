@@ -1,15 +1,13 @@
 ---
 name: bootstrap
-description: Create or safely complete a project's Markdown research library, with optional requested Obsidian settings. Use for one-time library setup or explicitly scoped scaffold repair, not research or routine maintenance.
+description: Create, complete, or explicitly repair a project's local board and forge declarations from project facts and user choices. Use for one-time engineering setup, not ordinary implementation or external board/forge operations.
 ---
 
-Create the fixed `library/` layout from `resources/library/`. It works as plain Markdown and requires no engineering plugin. Setup creates directories, instructions, navigation, taxonomy, provenance log, and raw/wiki/topic templates; it does not research or create source content.
+Create or complete `docs/BOARD.md` and `docs/FORGE.md` locally. This setup works without the library plugin or existing board/forge bindings. It does not create external projects, cards, branches, commits, PRs, or messages. Normal `shape` and `deliver` tasks consume declarations without loading or running setup.
 
-Read [scaffold details](references/scaffold.md) for the resource map and token substitutions. Inspect the target library and root instructions first. Fill missing scaffold files without rewriting existing notes, wiki pages, metadata, or customizations. If source-provider guidance is supplied, include it in the new conventions; this repository uses `webtools`. Missing provider access is reported without substitution.
+Read [board authoring](references/board.md) only when preparing the board declaration and [forge authoring](references/forge.md) only for the forge declaration. Use their bundled templates with repository facts and supplied choices. A project may explicitly choose no board or no forge; record that instead of inventing integrations.
 
-Merge the bundled root library pointer into an appropriate existing `AGENTS.md` section without duplication; do not create a root instruction file solely for the pointer. Obsidian is optional and separately requested from the basic scaffold: read [Obsidian setup](references/obsidian.md) only for that scope. Preserve settings and keep the scaffold useful without plugins or services.
-
-The main agent may produce the scaffold or delegate exclusive paths to `ca77y_library_scribe`. A fresh `ca77y_library_clerk` validates the setup spec and a different fresh clerk validates the scaffold. Give each the supplied setup scope and templates; missing output conventions are not prerequisites for this explicit bootstrap. Ordinary `research` reads resulting conventions without running setup; `ask` reports a missing library without creating one.
+The main agent may draft directly or use `ca77y_engineering_writer`. A fresh `ca77y_engineering_auditor` validates the setup spec and a different fresh auditor validates the generated declarations. Give each the explicit bootstrap scope so missing output declarations are not mistaken for missing production prerequisites.
 
 ## Setup gates and ownership
 

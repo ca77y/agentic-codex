@@ -1,0 +1,34 @@
+# Forge declaration
+
+## Repository and access
+
+{{REPOSITORY_REMOTES_AND_PERMITTED_DESTINATIONS}}
+{{FORGE_ACCESS_MECHANISM_OR_EXPLICIT_NONE}}
+
+## Branches and workspace
+
+{{TARGET_BRANCH_PROTECTION}}
+{{BRANCH_DERIVATION_WORKSPACE_PATH_IGNORE_AND_RECOVERY}}
+{{USER_OWNED_CLEANUP}}
+
+## Commits and publication
+
+{{COMMIT_CONVENTION_AND_AUTHORIZATION}}
+{{LOCAL_CHECKPOINTS_AND_VALIDATED_PUSH_CONDITIONS}}
+
+Configuration alone does not authorize execution. A local edit request does not authorize commits or publication. Comments and review requests require explicit user authorization.
+
+## Operations
+
+{{BRANCH_COMMIT_PUSH_CREATE_UPDATE_READ_AND_COMMENT_BINDINGS}}
+{{UNAVAILABLE_OPERATIONS_AND_USER_OWNED_DECISIONS}}
+
+## Change artifact and review
+
+{{TITLE_BODY_METADATA_TARGET_AND_ONE_CHANGE_PER_TASK_RULE}}
+{{REAL_RETURNED_URL_SOURCE}}
+{{REVIEW_TRIGGER_OR_EXPLICIT_NONE_AND_REQUIRED_CHECKS}}
+
+## Restrictions
+
+{{MERGE_FORCE_PUSH_HISTORY_REF_RELEASE_CLEANUP_AND_DESTINATION_RESTRICTIONS}}

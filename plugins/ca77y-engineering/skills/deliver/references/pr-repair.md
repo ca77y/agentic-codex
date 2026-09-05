@@ -2,10 +2,10 @@
 
 Read when the requested change repairs an existing PR or responds to its findings.
 
-Read applicable forge bindings and inspect the existing PR, branch/base, working changes, original acceptance source, and findings. Reuse the current suitable environment and existing PR/branch. Do not reset or discard unexplained changes, create a replacement PR, or replay the legacy pipeline by default.
+Read applicable forge bindings and inspect the existing PR, branch/base, working changes, original acceptance source, and findings. Reuse the current suitable environment and existing PR/branch. Do not reset or discard unexplained changes, create a replacement PR.
 
 Determine which findings are defects, missing evidence, or requests for a material scope change. Resolve routine design details within the authorized repair. A material contract change requires a revised spec and fresh specification validation before the affected implementation; an existing relevant spec also requires fresh validation before nontrivial work. Reconstruct missing acceptance evidence from authoritative artifacts, and report what cannot be recovered rather than inventing it.
 
 Recover the unresolved problem's attempt history before trying a correction. A changed error, new reviewer, or a resumed PR does not reset it. Use the core skill's fresh validation for the final candidate, including repaired findings, affected regressions, and documentation. Failed candidates and failed spec approaches consume the same aggregate budget.
 
-Push or update the PR only when that endpoint was requested, applicable `deliver` authority is explicit in the forge binding, and the required gates pass. Legacy `lead` grants do not transfer. Follow the bound operations; avoid unrelated history changes. User authorization to implement does not by itself authorize comments or review-trigger messages to others. Report addressed findings, current verification, the existing PR identity, and any remaining blocked endpoint.
+Push or update the PR only when that endpoint was requested, the forge operation’s binding and conditions apply, and the required gates pass. Follow the bound operations; avoid unrelated history changes. User authorization to implement does not by itself authorize comments or review-trigger messages to others. Report addressed findings, current verification, the existing PR identity, and any remaining blocked endpoint.

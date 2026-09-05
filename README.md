@@ -1,39 +1,19 @@
-# ca77y-agentic for Codex
+# ca77y agentic toolkit for Codex
 
-Two independently installable Codex plugins provide four recommended entry points. Describe the desired outcome naturally or invoke its qualified skill name.
+Two independently installable plugins provide four normal entry points. The main agent owns the requested outcome, evidence, dynamic model selection, and a shared limit of three failed solution attempts for an unresolved problem.
 
-| Plugin | Entry point | Outcome |
-| --- | --- | --- |
-| `ca77y-engineering` | [`shape`](plugins/ca77y-engineering/skills/shape/SKILL.md) | A scoped proposal or specification with observable acceptance criteria. |
-| `ca77y-engineering` | [`deliver`](plugins/ca77y-engineering/skills/deliver/SKILL.md) | An implemented or repaired change through the requested, authorized local, commit, or PR endpoint. |
-| `ca77y-library` | [`research`](plugins/ca77y-library/skills/research/SKILL.md) | New investigation with reusable source evidence and cited synthesis saved in the library. |
-| `ca77y-library` | [`ask`](plugins/ca77y-library/skills/ask/SKILL.md) | An answer grounded in the existing library, with gaps and uncertainty made explicit. |
+| Plugin | Normal work | One-time setup | Supporting agents |
+| --- | --- | --- | --- |
+| Engineering | `shape` produces proposals/specs; `deliver` implements or repairs through the authorized local, commit, or PR endpoint. | `bootstrap` creates or completes board and forge declarations. | coder, QA, writer, auditor |
+| Library | `research` investigates and saves cited evidence; `ask` answers from existing library knowledge without internet requests or writes. | `bootstrap` creates or safely completes the Markdown library; Obsidian is optional. | researcher, librarian, scribe, clerk |
 
-The main agent owns the outcome and chooses production activities. A proposal does not authorize implementation; a local change does not imply publication; an existing-library answer does not initiate research or maintenance. Explicitly combined requests compose within one task. Engineering can work without a library, and library can work without engineering.
+Both plugins also provide `install-subagents`. Nontrivial changes require a written spec and fresh validation before production, then a different fresh validator for the candidate. Trivial changes can skip the written spec but still require fresh validation. Production delegation is optional. Missing production roles permit direct scoped work; missing required validators block the affected gate.
 
-## Evidence and delegation
+Engineering uses a fresh auditor for spec readiness and document acceptance, or fresh QA for code behavior and tests. One adequate final evaluation can include affected documentation and mechanical checks. Library uses fresh clerks for research specs, answers, evidence, and integrity. Production leaves author artifacts and tests; validators report findings and execute checks without repairing the candidate.
 
-Every nontrivial change follows written specification and fresh validation, then implementation and another fresh validation. Existing specs can be reused after validation of current fit. Every audit or validation—including tests, mechanical checks, citations, and optional formatting checks—uses a newly spawned report-only validator with no prior participation in the work. Corrected candidates require another fresh validator. Trivial changes can omit a written spec but still need fresh validation. Answer-only work needs no written spec.
+Researchers return new-source findings and provenance. Librarians retrieve existing knowledge read-only. The main agent or one designated scribe integrates synthesis and shared metadata after raw-note writers finish. Research follows project conventions and the configured provider; this repository requires `webtools` for internet research and reports its absence without provider substitution.
 
-Each plugin supplies its own validator: `ca77y_engineering_validator` and `ca77y_library_validator`. These leaves evaluate the assigned artifacts and run checks without editing the candidate or requiring legacy pipeline artifacts. Their procedures live at `agents/validator/AGENT.md`, with distributable TOML resources under `skills/install-subagents/resources/`.
-
-New entry points select a currently available model and supported reasoning effort for each delegated responsibility, with a brief rationale. Borderline work starts with the lower capable tier; demanding work may start stronger. Custom-agent definitions omit fixed model settings. Production can happen directly or through compatible bounded custom agents. Every validator uses `spawn_agent` with its configured name and `fork_turns: "none"`; `followup_task` continues production only, and `wait_agent` collects results.
-
-Three failed solution attempts for the same unresolved outcome stop the entire run across gates, agents, models, and resumptions. The main agent preserves failure evidence and recovery state; another attempt requires explicit user authorization. This is an instruction-level workflow requirement, not a tool-enforced runtime counter.
-
-## Project bindings and supporting workflows
-
-Board and forge operations use `docs/BOARD.md` and `docs/FORGE.md` only when needed. Missing bindings block that operation while allowing authorized preparation. Role-specific grants to `analyst`, `writer`, or `lead` do not transfer to `shape` or `deliver`. This repository's declarations still name legacy roles, so the new entry points cannot use those grants for external writes until an authorized binding update makes them explicit.
-
-Engineering's `board` and `forge` skills author or inspect declarations. Library's `bootstrap` creates the Markdown vault and optional Obsidian configuration. Both plugins retain `install-subagents`. Research follows the project's library conventions and configured provider; this repository requires `webtools` for internet research and reports its absence rather than substituting a provider.
-
-User-callable procedures live in `skills/<name>/SKILL.md`; bounded specialist procedures live in `agents/<role>/AGENT.md`. Substantial conditional instructions live beside their owning manual and are loaded only when their stated condition applies. The managed installer embeds core manuals and copies supporting references under `~/.codex/agents/.ca77y-engineering/` or `.ca77y-library/`, so installed references survive removal of the checkout or plugin cache.
-
-## Retained legacy interfaces
-
-`analyst`, `lead`, and `researcher` remain available with their existing behavior while compatibility migration is outside this implementation. They retain their earlier role sequencing and model tables; the four new entry points do not run those workflows. Explicit invocation selects the intended interface while both generations remain discoverable.
-
-The existing engineering agents are `ca77y_engineering_writer`, `ca77y_engineering_auditor`, `ca77y_engineering_junior_coder`, `ca77y_engineering_senior_coder`, and `ca77y_engineering_qa`. The existing library agents are `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`. Their core procedures remain intact. In particular, the legacy researcher agent embeds an orchestration chain; the new `research` entry point performs source work directly unless a compatible bounded research leaf is configured.
+Project authority lives in [`docs/BOARD.md`](docs/BOARD.md), [`docs/FORGE.md`](docs/FORGE.md), and [`library/_meta/librarian.md`](library/_meta/librarian.md). A local implementation request does not imply commits or publication; a proposal does not imply filing a card. Normal work consumes setup without running bootstrap.
 
 ## Install locally
 
@@ -45,20 +25,22 @@ codex plugin add ca77y-engineering@personal
 codex plugin add ca77y-library@personal
 ```
 
-Install the plugins' custom subagents with Python 3.11 or newer:
+Install the selected plugins' custom agents with Python 3.11 or newer:
 
 ```bash
 python3 plugins/ca77y-engineering/skills/install-subagents/scripts/install_agents.py
 python3 plugins/ca77y-library/skills/install-subagents/scripts/install_agents.py
 ```
 
-Run the same commands after updating the source. Add `--check` to validate source without installing, or `--check-installed` to check whether installed definitions and references match it. The installer updates only files it owns and refuses conflicts with unmanaged files.
+Run the same installer after source updates. It embeds each leaf's `agents/<role>/AGENT.md` and copies conditional references under `~/.codex/agents/.ca77y-engineering/` or `.ca77y-library/`, so installed references survive checkout/cache removal. Only marked files are updated or removed; unmanaged conflicts are refused and other-plugin files are preserved. Agent definitions contain no fixed model or reasoning settings.
 
-Start a new Codex task after installation so both the plugin skills and custom-agent catalog reload. Invoke orchestrator skills by their qualified names, for example `$ca77y-engineering:deliver` or `$ca77y-library:research`, or describe the matching task naturally. The new entry points dispatch `ca77y_engineering_validator` or `ca77y_library_validator` for fresh validation. If a required role is absent from the current catalog, the task reports that unmet condition instead of substituting another role.
+Start a new Codex task after installation to reload skills and the custom-agent catalog. Invoke a qualified skill such as `$ca77y-engineering:deliver` or `$ca77y-library:research`, or describe the matching work naturally. Engineering dispatches `ca77y_engineering_coder`, `ca77y_engineering_qa`, `ca77y_engineering_writer`, and `ca77y_engineering_auditor`. Library dispatches `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`.
 
-## Validate
+## Development validation
 
-Use Python 3.11 or newer with PyYAML available. Run the skill quick validator for every directory containing a `SKILL.md`, then both plugin validators:
+Diagnostics are optional installation utilities: `--check` inspects source without installing; `--check-installed` reports read-only drift; `--target` selects a temporary destination. Checks requested through a skill are delegated to a fresh engineering auditor or library clerk.
+
+Use Python 3.11 or newer with PyYAML available. Run every skill quick validator, then both plugin validators and installer suites:
 
 ```bash
 for skill in plugins/*/skills/*/; do
@@ -70,4 +52,4 @@ python3 plugins/ca77y-engineering/skills/install-subagents/scripts/test_install_
 python3 plugins/ca77y-library/skills/install-subagents/scripts/test_install_agents.py
 ```
 
-When running through a new entry point, delegate these checks to a fresh validator. Mechanical checks establish packaging and format validity; scenario evaluation is needed to assess instruction behavior. The acceptance source and implementation boundary are in [`docs/specs/plugin-redesign-entry-points.md`](docs/specs/plugin-redesign-entry-points.md) and [`docs/specs/plugin-entry-points-implementation.md`](docs/specs/plugin-entry-points-implementation.md).
+The installer suites exercise real plugin resources and isolated destinations, including stale cleanup, unmanaged conflicts, drift, and reference survival after source removal. Mechanical checks establish format and packaging validity; bounded scenarios assess instruction behavior separately. The acceptance source is [`docs/specs/plugin-specialists-and-skill-integration.md`](docs/specs/plugin-specialists-and-skill-integration.md).

@@ -1,4 +1,4 @@
 # managed-by: ca77y-engineering
 name = "ca77y_engineering_writer"
-description = "Ca77y specification and documentation subagent for the spec pass and docs pass."
+description = "Draft or revise a bounded proposal, specification, or documentation artifact from supplied source material. Preserve facts, citations, user intent, and project conventions. Do not independently investigate new research questions or implement code. Report missing source material and unresolved decisions instead of inventing facts. This role works without the library plugin."
 manual = "../../../agents/writer/AGENT.md"
