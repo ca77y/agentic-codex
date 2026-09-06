@@ -5,6 +5,12 @@ description: Install or refresh ca77y-library's managed Codex custom agents and 
 
 # Install ca77y-library agents
 
+## Ledger ownership
+
+On every invocation, open or create the outcome's durable ledger using the [ledger procedure](../research/references/ledger.md) and [template](../research/assets/ledger.md) before production or delegation. The main agent is its sole writer, including for trivial work and runs without subagents. Record returned subagent IDs/canonical handles, assignments and progress; update before dispatch and waits, immediately after dispatch, on results and gate/failure changes, and before handoff or the final response. Reuse the ledger on resume and across entry points, preserving failure history. Link the ledger in the final response.
+
+## Installation
+
 Requires Python 3.11 or newer. From this skill directory run `python3 scripts/install_agents.py`. Report the installer’s installed, unchanged, and removed files. Start a new Codex task to reload the custom-agent catalog; normal use can then dispatch the available roles. This installs researcher, librarian, scribe, and clerk.
 
 The installer embeds each leaf's core `AGENT.md` and copies references into `~/.codex/agents/.ca77y-library/<resource-stem>/references/`, preserving paths after source/cache removal. References load only when their core procedure calls for them. Source metadata contains only the managed marker, `name`, `description`, and `manual`; generated definitions have no fixed model or reasoning fields.

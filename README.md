@@ -5,13 +5,15 @@ Two independently installable plugins provide four normal entry points. The main
 | Plugin | Normal work | One-time setup | Supporting agents |
 | --- | --- | --- | --- |
 | Engineering | `shape` produces proposals/specs; `deliver` implements or repairs through the authorized local, commit, or PR endpoint. | `bootstrap` creates or completes board and forge declarations. | coder, QA, writer, auditor |
-| Library | `research` investigates and saves cited evidence; `ask` answers from existing library knowledge without internet requests or writes. | `bootstrap` creates or safely completes the Markdown library; Obsidian is optional. | researcher, librarian, scribe, clerk |
+| Library | `research` investigates and saves cited evidence; `ask` answers from existing library knowledge without internet requests or library writes. | `bootstrap` creates or safely completes the Markdown library; Obsidian is optional. | researcher, librarian, scribe, clerk |
 
 Both plugins also provide `install-subagents`. Nontrivial changes require a written spec and fresh validation before production, then a different fresh validator for the candidate. Trivial changes can skip the written spec but still require fresh validation. Production delegation is optional. Missing production roles permit direct scoped work; missing required validators block the affected gate.
 
 Engineering uses a fresh auditor for spec readiness and document acceptance, or fresh QA for code behavior and tests. One adequate final evaluation can include affected documentation and mechanical checks. Library uses fresh clerks for research specs, answers, evidence, and integrity. Production leaves author artifacts and tests; validators report findings and execute checks without repairing the candidate.
 
 Researchers return new-source findings and provenance. Librarians retrieve existing knowledge read-only. The main agent or one designated scribe integrates synthesis and shared metadata after raw-note writers finish. Research follows project conventions and the configured provider; this repository requires `webtools` for internet research and reports its absence without provider substitution.
+
+Every entry point, including bootstrap and installation, keeps a durable ledger owned by the main agent. It records progress, returned subagent IDs/canonical handles, assignments, gate evidence, and failure history before waits and handoffs. Reuse it across skills and resumptions. Ledgers default to `docs/ledgers/<run-id>.md` in the project, or `$CODEX_HOME/ledgers/` (default `~/.codex/ledgers/`) without a project; keep them outside the research library and plugin caches. Each plugin ships a template: [engineering](plugins/ca77y-engineering/skills/deliver/assets/ledger.md) and [library](plugins/ca77y-library/skills/research/assets/ledger.md).
 
 Project authority lives in [`docs/BOARD.md`](docs/BOARD.md), [`docs/FORGE.md`](docs/FORGE.md), and [`library/_meta/librarian.md`](library/_meta/librarian.md). A local implementation request does not imply commits or publication; a proposal does not imply filing a card. Normal work consumes setup without running bootstrap.
 
@@ -54,4 +56,4 @@ Use Python 3.11 or newer with PyYAML available. Run every skill quick validator,
 )
 ```
 
-The installer suites exercise real plugin resources and isolated destinations, including stale cleanup, unmanaged conflicts, drift, and reference survival after source removal. Mechanical checks establish format and packaging validity; bounded scenarios assess instruction behavior separately. The acceptance source is [`docs/specs/plugin-specialists-and-skill-integration.md`](docs/specs/plugin-specialists-and-skill-integration.md).
+The installer suites exercise real plugin resources and isolated destinations, including stale cleanup, unmanaged conflicts, drift, and reference survival after source removal. Mechanical checks establish format and packaging validity; bounded scenarios assess instruction behavior separately. The acceptance sources are [supporting agents and skill integration](docs/specs/plugin-specialists-and-skill-integration.md) and [orchestrator ledgers](docs/specs/orchestrator-ledgers.md).

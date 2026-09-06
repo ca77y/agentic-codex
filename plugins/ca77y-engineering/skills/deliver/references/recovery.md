@@ -1,8 +1,8 @@
 # Recovery state
 
-Read when resuming interrupted work or when failure history needs durable preservation. The core three-attempt rule always applies, even if this reference was never needed earlier.
+Read when resuming interrupted work or recovering failed attempts. The [ledger procedure](ledger.md) applies on every invocation; this reference adds delivery-specific recovery context.
 
-Find the project-approved durable record associated with the outcome, spec, or existing PR before another attempt. Use an existing task record or another permitted durable artifact; do not depend on live worker targets, ignored worktree scratch, or a new unapproved service. Keep only enough state to resume soundly:
+Open the existing outcome ledger using its discovery and ownership rules before another attempt. Reconcile it with the spec, candidate and existing PR; never create a fresh history because the entry point, checkout or worker changed. Recover:
 
 - Outcome/problem identity, acceptance source, user authority and endpoint.
 - Spec and candidate identities, current paths, useful completed work, and evidence still valid.

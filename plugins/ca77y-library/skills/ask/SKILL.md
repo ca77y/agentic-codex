@@ -3,7 +3,11 @@ name: ask
 description: Answer a question, comparison, or synthesis from the existing project library, citing its evidence and exposing gaps or staleness. Does not initiate internet research, persist content, or perform maintenance.
 ---
 
-Answer in the conversation using the existing library. Stay within retrieval: do not initiate internet research, persist new library content, or perform maintenance merely to fill a gap. Move to `research` only when new investigation is authorized by the request or later steering.
+Answer in the conversation using the existing library. Stay within retrieval: do not initiate internet research, persist new library content, or perform maintenance merely to fill a gap. Maintain only the separate operational ledger outside the library as required below. Move to `research` only when new investigation is authorized by the request or later steering.
+
+## Ledger ownership
+
+On every invocation, open or create the outcome's durable ledger using the [ledger procedure](../research/references/ledger.md) and [template](../research/assets/ledger.md) before production or delegation. The main agent is its sole writer, including for trivial work and runs without subagents. Record returned subagent IDs/canonical handles, assignments and progress; update before dispatch and waits, immediately after dispatch, on results and gate/failure changes, and before handoff or the final response. Reuse the ledger on resume and across entry points, preserving failure history. Link the ledger in the final response.
 
 ## Context and answer
 
@@ -21,7 +25,7 @@ The main agent owns interpretation, decisions, production, integration, evidence
 
 Infer the outcome from the request and conversation. Discussion alone does not authorize implementation. Compose explicitly requested outcomes in the same task, meeting each contract; completion of one does not authorize the next. Preserve scope, decisions, and failure history when the requested outcome materially changes. Ask a focused question only when a missing decision prevents sound progress; continue independent authorized work.
 
-Tie completion evidence to its acceptance source, exact artifact or candidate revision, observation/check, and result. A content digest or an identified unchanged snapshot can identify uncommitted work. Keep the smallest recoverable record; no universal evidence table is required. Later edits invalidate affected evidence. Missing, failed, and unrunnable checks remain visible and are never passes.
+Tie completion evidence to its acceptance source, exact artifact or candidate revision, observation/check, and result. A content digest or an identified unchanged snapshot can identify uncommitted work. Keep this evidence in the mandatory ledger, linking larger artifacts instead of duplicating them. Later edits invalidate affected evidence. Missing, failed, and unrunnable checks remain visible and are never passes.
 
 ## Fresh validation
 
@@ -41,6 +45,6 @@ Track at most **three failed solution attempts for the same unresolved problem a
 
 The count follows the unresolved outcome across changed errors, hypotheses, models, effort, agents, gates, entry points, checkouts, interruptions, and conversation turns. Unrelated success does not reset it. Close a problem only on verified resolution; restore its history if later evidence shows resolution never held. Independent problems may have separate counts, but reaching three on any problem stops the entire run, including background work.
 
-Give delegated solution work the problem identity and remaining budget, and require all evaluated internal failures to be reported without hidden repair loops. Prefer one owner for successive attempts. Reserve an attempt slot for each parallel alternative solution before dispatch; evidence gathering alone does not consume solution slots. The main agent aggregates failures and escalation decisions. Recover existing history before resuming; persist it in a project-approved durable location when recovery needs it, never only worker handles or disposable scratch. If durable storage is unavailable, return the recovery record and the unmet persistence condition instead of silently resuming without history.
+Give delegated solution work the problem identity and remaining budget, and require all evaluated internal failures to be reported without hidden repair loops. Prefer one owner for successive attempts. Reserve an attempt slot for each parallel alternative solution before dispatch; evidence gathering alone does not consume solution slots. The main agent aggregates failures and escalation decisions. Recover the existing ledger before resuming; preserve failure history there throughout the run, never only in worker handles or disposable scratch. If durable storage is unavailable, return the ledger and the unmet persistence condition instead of silently resuming without history.
 
 On the third failure, stop active workers and execution: no fourth attempt, further escalation, or publication as complete. Saving artifacts and recovery state is permitted. Return the unresolved outcome and blocking evidence, all three approaches with models/efforts where applicable and why each failed, current candidate and useful completed work, and the specific decision, information, access, or explicit additional attempt authorization needed. Return earlier if essential access, authority, information, or a plausible next approach is absent. Further attempts require explicit user authorization recorded alongside, never replacing, the history. These instructions define workflow behavior, not a hard tool-level runtime counter.

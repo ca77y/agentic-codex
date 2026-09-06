@@ -44,7 +44,7 @@ Each entry point must make the following clear in its `SKILL.md`:
 
 Read project bindings when the corresponding operation needs them. Missing board or publication configuration blocks that operation, while allowing already-authorized investigation and preparation. Role names in existing declarations do not automatically transfer write authority to renamed entry points; implementation must reconcile those bindings before enabling such writes.
 
-Evidence must identify its acceptance source, relevant artifact or candidate revision, observation or check, and result. Use the smallest representation that remains clear and recoverable. A written spec is required for nontrivial changes; trivial changes and answer-only tasks do not require one. A separate ledger or evidence table is not mandatory for every task. A test result applies to the candidate it checked; later changes invalidate affected evidence. Missing evidence must remain visible rather than being reported as a pass.
+Evidence must identify its acceptance source, relevant artifact or candidate revision, observation or check, and result. Use the smallest representation that remains clear and recoverable. A written spec is required for nontrivial changes; trivial changes and answer-only tasks do not require one. Every orchestrator maintains the mandatory durable ledger described in [orchestrator ledgers](orchestrator-ledgers.md), including answer-only and trivial work. Record progress, returned subagent IDs/canonical handles, assignments, evidence and failed attempts, and retain the ledger across entry points and resumptions. A test result applies to the candidate it checked; later changes invalidate affected evidence. Missing evidence must remain visible rather than being reported as a pass.
 
 Ask a focused question when a missing decision prevents sound progress, and continue independent authorized work when useful. Return sooner than the retry limit when essential access, information, authority, or a plausible next approach is unavailable.
 
@@ -104,7 +104,7 @@ The main agent may delegate independent source questions. Assign exclusive raw-n
 
 **Completion evidence:** the answer addresses the question, links its material claims to existing evidence, and identifies relevant gaps, conflicts, or staleness. Distinguish a library-supported fact from an inference.
 
-**Endpoint:** the answer in the conversation. Do not initiate internet research, persist new library content, or perform maintenance merely to fill a gap. If the library does not support an answer, say what is missing; that is a valid retrieval outcome. Move to `research` only when new investigation is authorized by the request or later steering.
+**Endpoint:** the answer in the conversation, with its separate operational ledger outside the library. Do not initiate internet research, persist new library content, or perform maintenance merely to fill a gap. If the library does not support an answer, say what is missing; that is a valid retrieval outcome. Move to `research` only when new investigation is authorized by the request or later steering.
 
 ## Specification and implementation gates
 
@@ -159,7 +159,7 @@ After the third failure, do not start a fourth solution attempt, escalate again,
 - The state of the candidate and any useful completed work.
 - The specific decision, information, access, or explicitly authorized further attempt needed to proceed.
 
-Saving state and stopping workers are permitted after the gate; continued solution work is not. Persist failure history in a project-approved durable location when recovery requires it. Do not rely solely on live worker handles or disposable worktree scratch. A restored task must retain the count. Further attempts after the gate require explicit user authorization; a new worker or automatic continuation cannot grant it. Record any user-granted additional budget without deleting the previous attempts.
+Saving state and stopping workers are permitted after the gate; continued solution work is not. Persist failure history in the mandatory ledger throughout the run, using the location and lifecycle in [orchestrator ledgers](orchestrator-ledgers.md). Do not rely solely on live worker handles or disposable worktree scratch. A restored task must retain the count. Further attempts after the gate require explicit user authorization; a new worker or automatic continuation cannot grant it. Record any user-granted additional budget without deleting the previous attempts.
 
 This is a required workflow behavior. Instruction files alone do not enforce a runtime counter; a future implementation must not claim a hard tool-level limit without a mechanism that provides it.
 

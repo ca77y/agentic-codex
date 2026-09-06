@@ -112,7 +112,7 @@ The validator treats the supplied candidate as stable. If it changes during eval
 
 Update all four manuals to name these compatible agents. Remove temporary legacy-incompatibility instructions once their named roles are retired. Optional production delegation remains optional: an unavailable production leaf permits direct work within scope, while an unavailable required validator blocks the gate. Do not silently substitute a generic agent.
 
-The main agent owns integration decisions and assigns exactly one active writer for library wiki content and shared metadata: itself or a designated scribe. Wait for outstanding raw-note writers before integration, and finish deferred index, taxonomy, and log work before final validation. A source batch does not imply one agent per source. Existing-library answers never become writes or new investigation merely because delegated retrieval finds a gap. Librarian, researcher, and scribe dispatches are optional production choices, not a mandatory chain. The specification and final validation gates remain mandatory wherever their entry-point conditions apply, and each uses a fresh clerk.
+The main agent owns integration decisions and assigns exactly one active writer for library wiki content and shared metadata: itself or a designated scribe. Wait for outstanding raw-note writers before integration, and finish deferred index, taxonomy, and log work before final validation. A source batch does not imply one agent per source. Existing-library answers never become library writes or new investigation merely because delegated retrieval finds a gap. Their main agent maintains the separate operational ledger outside the library. Librarian, researcher, and scribe dispatches are optional production choices, not a mandatory chain. The specification and final validation gates remain mandatory wherever their entry-point conditions apply, and each uses a fresh clerk.
 
 Replace the separate `board` and `forge` skills with one engineering `bootstrap`; provide a library `bootstrap` for its scaffold. Each owns its setup references and templates. The four normal entry points consume the configured project; they do not load bootstrap instructions or run setup during ordinary work.
 
@@ -211,7 +211,7 @@ Keep the accepted policy in the canonical entry points: the main agent selects a
 
 Give each production worker a bounded outcome, acceptance source, permitted paths, concurrent owners, and problem identity with its remaining attempt allocation. Give validators exact artifacts and evidence scope without supplying an expected verdict. Production continuations may reuse a worker; all validation dispatches are fresh.
 
-After failure, the main agent may revise the approach and escalate model or effort within the existing budget. Three failed solution attempts for the same unresolved outcome stop the entire run across specification, implementation, validation, workers, models, and resumptions. No specialist may extend the allowance or treat a role transition as resolution. Keep ordinary task findings and recovery evidence; do not introduce another agent-level reporting channel.
+After failure, the main agent may revise the approach and escalate model or effort within the existing budget. Three failed solution attempts for the same unresolved outcome stop the entire run across specification, implementation, validation, workers, models, and resumptions. No specialist may extend the allowance or treat a role transition as resolution. Keep ordinary task findings and recovery evidence in the main-agent-owned ledger required by [orchestrator ledgers](orchestrator-ledgers.md); do not introduce another agent-level reporting channel.
 
 ## Reference organization
 
@@ -228,7 +228,7 @@ Suggested responsibilities to place in references where substantial:
 - Scribe: research-spec drafting, raw-note production, and sole-writer integration, selected by the assigned scope.
 - Clerk: research-spec readiness, evidence support and uncertainty, library integrity, and affected-link checks.
 
-Write focused procedures for the new contracts without inheriting retired dispatch chains, self-validation, or model policy. Do not introduce a shared always-loaded router or a mandatory reference file for every short procedure. Existing new-entry-point references continue to own PR repair, recovery, cards, and final synthesis integration.
+Write focused procedures for the new contracts without inheriting retired dispatch chains, self-validation, or model policy. The shared ledger procedure required by [orchestrator ledgers](orchestrator-ledgers.md) applies on every invocation. Keep other conditional procedures scoped to their actual need; do not add a general always-loaded router. Existing new-entry-point references continue to own PR repair, recovery, cards, and final synthesis integration.
 
 ## Remove the improvement mechanism
 
@@ -263,7 +263,7 @@ The implementation must satisfy the following observable outcomes. A fresh valid
 | A5 | Each validation and revalidation uses a new report-only agent, including documentation and optional mechanical checks. | Trace specification, implementation, and corrected-candidate scenarios. |
 | A6 | Borderline tasks can start on the lower capable tier, while escalation does not add attempts. | Dispatch-policy inspection and a bounded failure/escalation scenario. |
 | A7 | A third failed solution attempt stops work across workers and gates. | Scenario with failures shared across a spec and implementation; no fourth attempt. |
-| A8 | `ask` and its librarian perform no internet requests or writes; a fresh clerk validates the answer. | Existing-library fixture with an evidence gap; return a cited draft or bounded gap. |
+| A8 | `ask` performs no internet requests or library writes and maintains only its separate operational ledger; its librarian remains read-only; a fresh clerk validates the answer. | Existing-library fixture with an evidence gap; return a cited draft or bounded gap. |
 | A9 | New research uses the configured provider and preserves retrieved evidence and uncertainty. | Available-source and unavailable-provider scenarios, including an unfetched lead. |
 | A10 | Researchers return source evidence; raw-note scribes have disjoint paths, and only the main agent or its sole designated scribe updates synthesis and shared metadata. | Two bounded source assignments followed by assigned persistence, integration, and fresh clerk validation. |
 | A11 | Project and bootstrap library conventions support owner integration without changing existing evidence; missing setup is reported without implicit scaffolding. | Targeted convention diff, synthesis fixture, and missing-library scenario. |
