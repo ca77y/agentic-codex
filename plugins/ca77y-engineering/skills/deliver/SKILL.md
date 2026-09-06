@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Implement or repair a requested change, including small fixes, features, documentation, and findings on an existing PR. Deliver verified work through the authorized local, commit, or PR endpoint.
+description: Use only when the user explicitly invokes this skill. Never invoke it automatically.
 ---
 
 Deliver the requested change through its authorized endpoint. A generic implementation request means a local change; it does not silently authorize committing, pushing, opening a PR, or sending messages. Resolve routine design details without requiring a separate `shape` invocation.

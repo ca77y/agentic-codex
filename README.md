@@ -34,7 +34,7 @@ python3 plugins/ca77y-library/skills/install-subagents/scripts/install_agents.py
 
 Run the same installer after source updates. It embeds each leaf's `agents/<role>/AGENT.md` and copies conditional references under `~/.codex/agents/.ca77y-engineering/` or `.ca77y-library/`, so installed references survive checkout/cache removal. Only marked files are updated or removed; unmanaged conflicts are refused and other-plugin files are preserved. Agent definitions contain no fixed model or reasoning settings.
 
-Start a new Codex task after installation to reload skills and the custom-agent catalog. Invoke a qualified skill such as `$ca77y-engineering:deliver` or `$ca77y-library:research`, or describe the matching work naturally. Engineering dispatches `ca77y_engineering_coder`, `ca77y_engineering_qa`, `ca77y_engineering_writer`, and `ca77y_engineering_auditor`. Library dispatches `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`.
+Start a new Codex task after installation to reload skills and the custom-agent catalog. `deliver` requires explicit invocation, such as `$ca77y-engineering:deliver`, and is never selected automatically. Other skills can be invoked by their qualified name, such as `$ca77y-library:research`, or by describing matching work naturally. Engineering dispatches `ca77y_engineering_coder`, `ca77y_engineering_qa`, `ca77y_engineering_writer`, and `ca77y_engineering_auditor`. Library dispatches `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`.
 
 ## Development validation
 

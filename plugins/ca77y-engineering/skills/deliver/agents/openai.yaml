@@ -1,0 +1,5 @@
+interface:
+  display_name: "Deliver"
+  short_description: "Use only when explicitly invoked by the user."
+policy:
+  allow_implicit_invocation: false
