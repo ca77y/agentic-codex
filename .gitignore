@@ -3,3 +3,6 @@
 
 # Local workflow state and scratch, at the root of each checkout or worktree
 /.tmp/
+
+# Preserve ignore protection for existing scratch files
+/tmp/
