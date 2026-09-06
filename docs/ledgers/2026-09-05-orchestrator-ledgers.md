@@ -19,13 +19,13 @@
 
 ## Current progress
 
-- Phase/status: publication
+- Phase/status: version publication
 - Completed: inspected existing flows; drafted and revised spec; fresh spec passed; implemented mandatory ledgers across all eight entry points and current docs; fresh final acceptance passed
-- In progress: preserve validated candidate, commit and push to origin/master
+- In progress: commit and push Engineering3.1.0 / Library2.1.0 manifests to origin/master
 - Pending: commit and push this validated snapshot; resolve publication outcome from git commit and origin/master refs
 - Blockers and unresolved findings: none
-- Next action / owner: main agent commits the 19 attributable paths (18 product files plus this ledger) and pushes master to origin
-- Endpoint reached or unmet condition: verified local implementation complete; commit and push requested on 2026-09-06, not yet executed
+- Next action / owner: main agent commits two validated version manifests and this ledger, then pushes master to origin
+- Endpoint reached or unmet condition: ledger implementation committed and pushed as 031ad1d; requested version bump validated and ready for commit/push
 
 ## Subagents
 
@@ -115,3 +115,22 @@
 - Compatibility validator /root/ledger_publish_compatibility completed: PASS, no findings. Spec unchanged. All 8 skill validators and both plugin validators pass; staged diff whitespace check passes.
 - Publication candidate: HEAD 33f6af09a8e3f4bd4b7fb3b6903539ff60af4fb8 plus 18 staged non-ledger paths; SHA256 20bf1f99c8e09cdd9894f3570ff1cf039c65f0d3163811fab2a920723ef0c0a9 over sorted path + NUL + index-content + NUL records. Old acceptance is supplemented by this compatibility pass; all worker records and the 1/3 failure history remain retained.
 - Final publication checkpoint: verified and staged, authorized for master/origin. The commit containing this ledger records the exact published file snapshot; inspect that commit and origin/master to reconcile publication on resume. No release or plugin installation is requested.
+
+## Version publication — 2026-09-07
+
+- Authority: user requested a new version pushed to master for the ledger change already published as 031ad1d. Same /root owner and outcome; prior failure history remains 1/3.
+- Release versions: Engineering 3.0.2 → 3.1.0; Library 2.0.1 → 2.1.0. Minor versions identify the restored ledger capability. Only manifest versions change; no timestamp/build suffix, marketplace rewrite, tag or GitHub release is needed for the requested master publication.
+- Required local refresh: run each managed installer from the updated source so generated agent/reference plugin-version metadata follows the manifest. Do not hand-edit generated metadata.
+- Planned validation: fresh engineering auditor for all eight skill validators then both plugin validators and engineering installer checks; fresh library clerk for library installer checks. Both use gpt-5.6-sol/low for bounded packaging/version verification, read-only source/live drift diagnostics and isolated test writes; evidence-only allocation.
+- Status: version preparation; commit/push pending validation.
+
+- Managed refresh results: engineering installed/refreshed 10 owned files; library 11; neither reported unchanged or removed files.
+- Validator register: /root/ledger_release_engineering (actual task_name, opaque ID unavailable), ca77y_engineering_auditor, gpt-5.6-sol/low, owns package checks and engineering installer diagnostics; running, evidence-only.
+- Validator register: /root/ledger_release_library (actual task_name, opaque ID unavailable), ca77y_library_clerk, gpt-5.6-sol/low, owns library installer diagnostics; running, evidence-only.
+- State saved before waiting; next action collect both verdicts then commit/push the two manifests and ledger.
+
+- /root/ledger_release_library completed PASS: 20/20 installer tests, read-only installed drift check current, 4 generated TOMLs and 7 references all stamped2.1.0. Manifest SHA256 e48a6e2f02b02452e4f414b2f5409aa70468ed502141b97925cf89d10f9bd823. No findings or new solution failures. Await engineering/package verdict.
+
+- /root/ledger_release_engineering completed PASS: exactly two manifest-version lines; all 8 skill validators and both plugin validators passed; engineering installer20/20 and live drift check current; all10 owned generated files stamped3.1.0. Engineering manifest SHA256 4bfc42fdea8fc30beabde6a472b9b3a061901734eba213b82a10574869122261.
+- Auditor-reported diagnostic worker: /root/ledger_release_engineering/engineering_installer_diagnostics; canonical handle reported by parent, opaque ID/model/effort not exposed to main; engineering installer diagnostics completed PASS with isolated test artifacts, no live mutations.
+- Version publication checkpoint: Engineering3.1.0 and Library2.1.0 validated, managed agent refresh complete (10+11 files), no findings. Same1/3 failure history retained. Commit these two manifests plus ledger and push origin/master. Resulting commit/remote refs establish the publication outcome on resume.
