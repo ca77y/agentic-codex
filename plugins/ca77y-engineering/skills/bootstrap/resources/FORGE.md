@@ -9,6 +9,8 @@
 
 {{TARGET_BRANCH_PROTECTION}}
 {{BRANCH_DERIVATION_WORKSPACE_PATH_IGNORE_AND_RECOVERY}}
+
+Temp folder: `.tmp/` relative to the project root unless a different path is configured. Keep its ignore rule aligned with the selected path. Store workflow ledgers in `<temp-folder>/ledgers/` and preserve ledgers and required evidence during scratch cleanup and after completion.
 {{USER_OWNED_CLEANUP}}
 
 ## Commits and publication
