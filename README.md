@@ -1,6 +1,6 @@
 # ca77y agentic toolkit for Codex
 
-Two independently installable plugins provide four normal entry points. The main agent owns the requested outcome, evidence, dynamic model selection, and a shared limit of three failed solution attempts for an unresolved problem.
+Two independently installable plugins provide four normal entry points. The main agent owns the requested outcome, evidence, dynamic model selection, and a shared limit of three failed solution attempts for an unresolved problem within one run from user prompt to resolution. A separate later request, including PR comment review, starts its own budget; reading comments or discovering defects does not consume attempts.
 
 | Plugin | Normal work | One-time setup | Supporting agents |
 | --- | --- | --- | --- |
@@ -13,7 +13,7 @@ Engineering uses a fresh auditor for spec readiness and document acceptance, or 
 
 Researchers return new-source findings and provenance. Librarians retrieve existing knowledge read-only. The main agent or one designated scribe integrates synthesis and shared metadata after raw-note writers finish. Research follows project conventions and the configured provider; this repository requires `webtools` for internet research and reports its absence without provider substitution.
 
-Every entry point, including bootstrap and installation, keeps a durable ledger owned by the main agent. It records progress, returned subagent IDs/canonical handles, assignments, gate evidence, and failure history before waits and handoffs. Reuse it across skills and resumptions. Ledgers default to `docs/ledgers/<run-id>.md` in the project, or `$CODEX_HOME/ledgers/` (default `~/.codex/ledgers/`) without a project; keep them outside the research library and plugin caches. Each plugin ships a template: [engineering](plugins/ca77y-engineering/skills/deliver/assets/ledger.md) and [library](plugins/ca77y-library/skills/research/assets/ledger.md).
+Every entry point, including bootstrap and installation, keeps a durable ledger owned by the main agent. It records progress, returned subagent IDs/canonical handles, assignments, gate evidence, and failure history before waits and handoffs. Reuse it across skills and resumptions of that run; a separate later user request gets a new ledger and count, with prior ledgers retained as context. Ledgers default to `docs/ledgers/<run-id>.md` in the project, or `$CODEX_HOME/ledgers/` (default `~/.codex/ledgers/`) without a project; keep them outside the research library and plugin caches. Each plugin ships a template: [engineering](plugins/ca77y-engineering/skills/deliver/assets/ledger.md) and [library](plugins/ca77y-library/skills/research/assets/ledger.md).
 
 Project authority lives in [`docs/BOARD.md`](docs/BOARD.md), [`docs/FORGE.md`](docs/FORGE.md), and [`library/_meta/librarian.md`](library/_meta/librarian.md). A local implementation request does not imply commits or publication; a proposal does not imply filing a card. Normal work consumes setup without running bootstrap.
 

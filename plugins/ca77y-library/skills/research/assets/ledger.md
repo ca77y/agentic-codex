@@ -3,6 +3,8 @@
 ## Identity and authority
 
 - Run ID:
+- Initiating user request and resolution/endpoint:
+- Related prior run ledgers (context only; no inherited attempt count):
 - Absolute ledger path:
 - Project identity / project root:
 - Current checkout:
@@ -52,7 +54,7 @@ Use `none` when no workers exist. Copy one record per dispatch, including valida
 ## Attempts and reservations
 
 - Problem identity:
-- Aggregate failed attempts / limit: 0 / 3
+- Current-run aggregate failed attempts / limit: 0 / 3
 - Reserved solution slots and owners: none
 - Remaining unreserved allowance: 3
 - Explicit additional-attempt authorization: none
@@ -61,7 +63,7 @@ Use `none` when no workers exist. Copy one record per dispatch, including valida
 | --- | --- | --- | --- | --- |
 | None yet | | | | |
 
-Preserve each evaluated failure across gates, workers, turns and entry points. Repeat this section for genuinely independent problems; three failures on any one stops the run.
+Preserve each evaluated solution failure across gates, workers, turns and entry points within this run. Comment review and defect discovery alone do not consume attempts. A separate later user request uses a new ledger and count; preserve this history as context. Repeat this section for genuinely independent problems; three failures on any one stops the run.
 
 ## Decisions and handoff
 
