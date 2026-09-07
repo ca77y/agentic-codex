@@ -24,8 +24,10 @@ credentials live in this repository or belong in this file.
 - **Target branch** — `master`. Every story branches from it and every PR targets it.
   Automated operations never commit to it, check it out in a story worktree, or push it.
 - **Story worktrees** — `.worktrees/<branch>` at the repository root, covered by the
-  committed `.gitignore` entry `.worktrees/`. Run-local scratch at the root of each
-  worktree is covered by the committed `/tmp/` entry.
+  committed `.gitignore` entry `.worktrees/`.
+- **Temp folder** — `.tmp/` at the root of the current checkout or worktree, covered
+  by the committed `/.tmp/` entry. Store workflow ledgers in `.tmp/ledgers/`;
+  preserve ledgers and their required evidence during scratch cleanup and after completion.
 - **Branch name** — the issue's `gitBranchName`, read through [`BOARD.md`](./BOARD.md).
   Linear supplies a legal ref such as
   `tokwieci/smr-200-card-content-access`. Without
