@@ -1,6 +1,6 @@
 # The forge
 
-This declaration binds repository and publication operations to the destinations below. Authorization comes from the user's actual request and established conversation scope. Configuring an operation does not request its execution. Missing bindings block the affected operation while authorized local preparation may continue.
+This declaration binds repository and publication operations to the destinations below. Authorization comes from the user's actual request and established conversation scope. Configuring an operation does not request its execution. Explicit invocation of the deliver skill requests a PR endpoint and authorizes the corresponding task workspace, commits, verified push, and PR creation or update without another publication request. Missing bindings block the affected operation while authorized local preparation may continue.
 
 ## The repository
 
@@ -18,9 +18,7 @@ credentials live in this repository or belong in this file.
 
 ## Branches and worktrees
 
-- **Default working checkout** — ordinary repository work happens directly on
-  `master` in the repository root. Create or use a separate branch and worktree only
-  for a requested commit/PR endpoint or an explicit isolation request. Ordinary local edits may remain in the existing checkout.
+- **Default working checkout** — implementation requested without the deliver skill may remain an uncommitted local change on `master` in the repository root. Explicit deliver invocation requests a PR and uses the story branch and worktree. Other requested commit/PR endpoints or explicit isolation requests also use a separate branch and worktree.
 - **Target branch** — `master`. Every story branches from it and every PR targets it.
   Automated operations never commit to it, check it out in a story worktree, or push it.
 - **Story worktrees** — `.worktrees/<branch>` at the repository root, covered by the
@@ -106,11 +104,11 @@ No CI or required status check is currently defined in the repository.
 ## Operation conditions
 
 - **Read PR or diff** — the requested task requires that information from the bound repository.
-- **Create or recover workspace** — a requested commit/PR endpoint or explicit isolation request authorizes one story branch and worktree under `.worktrees/`, following the configured derivation. Recover the existing story branch/worktree for repair; do not create a second workspace.
-- **Commit** — the user requested a commit or PR endpoint. Stage only attributable paths in the authorized story worktree, without forced staging, and use Conventional Commits. A local-change-only request does not authorize commits.
-- **Push** — publication of the same change is requested and required validation and acceptance have passed. Push only the story branch to `origin`; first push when opening the PR, later pushes for verified repairs. Keep intermediate checkpoints local; blocking findings prevent a push.
-- **Open PR** — the user requested a PR. Open one against `master` in the bound repository and retain its real returned URL. Reuse the existing PR for story repair.
-- **Update PR** — the requested publication/repair scope includes that same PR; title/body must reflect the same change and preserve unused metadata restrictions. Do not widen scope or create another PR.
+- **Create or recover workspace** — an explicit deliver invocation, another requested commit/PR endpoint, or explicit isolation request authorizes one story branch and worktree under `.worktrees/`, following the configured derivation. Recover the existing story branch/worktree for repair; do not create a second workspace.
+- **Commit** — the user explicitly invoked deliver or otherwise requested a commit or PR endpoint. Stage only attributable paths in the authorized story worktree, without forced staging, and use Conventional Commits. A local-change-only request does not authorize commits.
+- **Push** — the user explicitly invoked deliver or otherwise requested publication of the same change, and required validation and acceptance have passed. Push only the story branch to `origin`; first push when opening the PR, later pushes for verified repairs. Keep intermediate checkpoints local; blocking findings prevent a push.
+- **Open PR** — the user explicitly invoked deliver or otherwise requested a PR. Open one against `master` in the bound repository and retain its real returned URL. Reuse the existing PR for story repair.
+- **Update PR** — the explicit deliver invocation or other requested publication/repair scope includes that same PR; title/body must reflect the same change and preserve unused metadata restrictions. Do not widen scope or create another PR.
 - **Comment or trigger review** — the user explicitly authorized the message or review request on that PR. Configuration alone does not authorize communication. Record the observed result; later findings resume through a user request.
 - **Remove worktree or branch** — user-controlled cleanup after merge; no automated grant.
 

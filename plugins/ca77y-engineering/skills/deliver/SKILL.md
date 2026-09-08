@@ -1,9 +1,11 @@
 ---
 name: deliver
-description: Use only when the user explicitly invokes this skill. Never invoke it automatically.
+description: Deliver a change through a verified pull request. Use only when the user explicitly invokes this skill; never invoke it automatically.
 ---
 
-Deliver the requested change through its authorized endpoint. A generic implementation request means a local change; it does not silently authorize committing, pushing, opening a PR, or sending messages. Resolve routine design details without requiring a separate `shape` invocation.
+Explicit invocation of this skill requests delivery through a pull request. It authorizes the task branch/worktree, attributable commits, push after the required gates pass, and creation or update of the same task PR; do not require a separate publication request. Follow the project’s board and forge bindings. Resolve routine design details without requiring a separate `shape` invocation.
+
+Without an explicit deliver invocation, a generic implementation request may remain a local change in the project’s default checkout, including master; it does not imply commits or publication. Deliver invocation does not authorize unrelated messages, review-trigger comments, releases, or merging.
 
 ## Ledger ownership
 
@@ -12,6 +14,8 @@ On every invocation, open or create the run's durable ledger using the [ledger p
 ## Context and authority
 
 Read the request and acceptance source, relevant code/docs, current checkout and working changes, and any existing PR or prior verification. Reuse a suitable current environment and preserve unrelated work. Read `docs/BOARD.md` and `docs/FORGE.md` when their operations apply. Missing configuration blocks the corresponding operation, not already-authorized investigation or local preparation. Use the actual request and the declaration’s operation-based conditions to determine authorization. Require applicable bindings before the corresponding board/forge writes; do not rewrite declarations to grant yourself authority.
+
+For a documentation-accuracy finding, prepare the correction brief using [claim-wide corrections](references/claim-corrections.md) before production, including direct work. Supply the whole candidate inventory and source evidence, then hand the final correction records to a fresh document auditor.
 
 For repair of an existing PR, read [PR repair](references/pr-repair.md); reuse that PR and branch when authorized. For interrupted work or failed attempts needing persisted recovery, read [recovery](references/recovery.md) before another solution attempt. Load only references relevant to the requested work.
 
@@ -29,7 +33,7 @@ If implementation exposes a material spec flaw or requires a material spec chang
 
 ## Completion
 
-Deliver the local change, commit, or existing/new PR only to the extent requested and authorized. The final candidate satisfies relevant acceptance criteria, required checks pass, affected documentation is current, and blocking findings are resolved. Report the artifact, supporting verification, and material limitations. If a gate or endpoint cannot be reached, preserve useful work and state the unmet condition instead of reporting completion.
+Complete delivery by opening the task PR or updating its existing PR after the required gates pass. A local change or local commit alone does not complete an invoked deliver run. The final candidate satisfies relevant acceptance criteria, required checks pass, affected documentation is current, and blocking findings are resolved. Report the artifact, supporting verification, and material limitations. If a gate or endpoint cannot be reached, preserve useful work and state the unmet condition instead of reporting completion.
 
 Optionally assign disjoint implementation/test production to `ca77y_engineering_coder` and bounded spec/doc production to `ca77y_engineering_writer`. Production agents author tests but leave execution and completion checks to fresh validators.
 
