@@ -1,4 +1,0 @@
-# managed-by: ca77y-engineering
-name = "ca77y_engineering_junior_coder"
-description = "Lower-complexity ca77y implementation subagent for validated specs scoring below 5."
-manual = "../../../agents/junior-coder/AGENT.md"

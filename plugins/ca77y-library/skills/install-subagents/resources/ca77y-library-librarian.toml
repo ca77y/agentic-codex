@@ -1,4 +1,4 @@
 # managed-by: ca77y-library
 name = "ca77y_library_librarian"
-description = "Ca77y research librarian for cited answers from a project's local Markdown knowledge base."
+description = "Retrieve existing library knowledge and prepare a cited draft answer or bounded evidence summary. This role is read-only: no internet requests, persistence, index repair, or other maintenance. A coverage gap stays a gap until the user authorizes new investigation through the main agent."
 manual = "../../../agents/librarian/AGENT.md"

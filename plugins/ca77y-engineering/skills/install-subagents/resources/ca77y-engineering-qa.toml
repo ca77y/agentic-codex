@@ -1,4 +1,4 @@
 # managed-by: ca77y-engineering
 name = "ca77y_engineering_qa"
-description = "Independent ca77y QA subagent for validation, missing tests, and local diff review."
+description = "Independently review code, execute tests, assess regression coverage and test adequacy, and validate implementation acceptance against the validated spec. Missing tests are findings for the coder; do not author or repair tests yourself."
 manual = "../../../agents/qa/AGENT.md"

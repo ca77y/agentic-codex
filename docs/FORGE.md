@@ -1,9 +1,6 @@
 # The forge
 
-How this project gets a story from a branch to a reviewed change, read directly at this
-fixed path — `docs/FORGE.md` — by the `lead`, before it creates a workspace. Keep it
-true, because the pipeline binds real commands to what it says, and because a run stops
-rather than guess when this file is missing.
+This declaration binds repository and publication operations to the destinations below. Authorization comes from the user's actual request and established conversation scope. Configuring an operation does not request its execution. Missing bindings block the affected operation while authorized local preparation may continue.
 
 ## The repository
 
@@ -23,45 +20,50 @@ credentials live in this repository or belong in this file.
 
 - **Default working checkout** — ordinary repository work happens directly on
   `master` in the repository root. Create or use a separate branch and worktree only
-  when running the `lead` workflow or when the user explicitly asks for one.
+  for a requested commit/PR endpoint or an explicit isolation request. Ordinary local edits may remain in the existing checkout.
 - **Target branch** — `master`. Every story branches from it and every PR targets it.
-  The pipeline never commits to it, checks it out in a story worktree, or pushes it.
+  Automated operations never commit to it, check it out in a story worktree, or push it.
 - **Story worktrees** — `.worktrees/<branch>` at the repository root, covered by the
-  committed `.gitignore` entry `.worktrees/`. Run-local scratch at the root of each
-  worktree is covered by the committed `/tmp/` entry.
+  committed `.gitignore` entry `.worktrees/`.
+- **Temp folder** — `.tmp/` at the root of the current checkout or worktree, covered
+  by the committed `/.tmp/` entry. Store workflow ledgers in `.tmp/ledgers/`;
+  preserve ledgers and their required evidence during scratch cleanup and after completion.
 - **Branch name** — the issue's `gitBranchName`, read through [`BOARD.md`](./BOARD.md).
   Linear supplies a legal ref such as
-  `tokwieci/smr-200-state-the-writers-spec-pass-board-access-includes-whatever`. Without
+  `tokwieci/smr-200-card-content-access`. Without
   an issue, use `<type>/<lowercase-kebab-slug>`.
 - **Removal** — after the PR merges, the human runs `git worktree remove <path>` and
-  deletes the branch. The pipeline does neither.
+  deletes the branch. Neither operation has an automated grant.
 
 ## Commits
 
-The migrated convention is **Conventional Commits**. Use `docs:` or `docs(<area>):` for
+The commit convention is **Conventional Commits**. Use `docs:` or `docs(<area>):` for
 specification and documentation, `feat:` or `feat(<area>):` for a build, and `fix:` or
 `fix(<area>):` for a fix round. A message names the issue when it adds the spec, and a
-pre-ship fix names the round whose findings it applies. Examples from the source
-repository's story branches:
+pre-ship fix names the round whose findings it applies. Illustrative subjects:
 
 ```text
-docs(spec): add SMR-200 spec for the writer's spec-pass board access
-feat(writer): state spec-pass board access as read, search, and the declaration's card-content authority
-fix(writer): name the pointer's target instead of its position
+docs(spec): add SMR-200 spec for card-content access
+feat(cards): support scoped card-content refinement
+fix(cards): correct the reference target for review round 1
 ```
 
 Push once when the PR opens. Before that, the spec, build, and pre-ship round commits
-stay local in the worktree. After the PR exists, push each fix round when committed.
+stay local in the worktree. After the PR exists, push each fix round once its affected
+validation and acceptance checks pass. Intermediate repair checkpoints stay local;
+an unresolved blocking finding prevents publication.
 Never force-push, amend or rebase pushed history, or push `master`.
 
 ## Operations
 
-- **branch** — `git worktree add .worktrees/<branch> -b <branch> master`.
+- **branch** — create new work with
+  `git worktree add .worktrees/<branch> -b <branch> master`; recover a missing worktree
+  for an existing story branch with `git worktree add .worktrees/<branch> <branch>`.
 - **remove a worktree** — `git worktree remove <path>` — *the human's, after merge*.
 - **commit** — `git -C <worktree> add <paths>` (never `-f`), then
   `git -C <worktree> commit`.
 - **push** — `git -C <worktree> push -u origin <branch>` the first time, immediately
-  before the PR opens; `git -C <worktree> push` on each later fix round.
+  before the PR opens; `git -C <worktree> push` on each later verified fix round.
 - **open the change** —
   `gh pr create --repo ca77y/agentic-codex --base master --head <branch> --title <title> --body-file <path>`.
   Its output is the PR URL; that output is the link, never a constructed pattern.
@@ -75,7 +77,7 @@ Never force-push, amend or rebase pushed history, or push `master`.
   and `gh pr diff <number> --repo ca77y/agentic-codex`.
 - **re-fire the review** —
   `gh pr comment <number> --repo ca77y/agentic-codex --body '@codex review'`.
-  Run after pushing each fix round to request review of the updated PR.
+  After a validated fix push, use only when that review message is authorized.
 - **merge** — *not available*. Merging and the merge method are the human's.
 
 ## The change artifact
@@ -97,26 +99,22 @@ same PR and branch.
 
 ## The review
 
-Codex reviews pull requests through the GitHub integration. Opening a PR for review
-triggers the initial review; posting the literal comment `@codex review` fires a new
-review. After pushing a fix round, the lead uses the **re-fire the review** binding
-above, reports the review as requested, and does not poll or wait for its result.
-Findings appear on the PR and re-enter the pipeline when a human invokes
-`ca77y-engineering:lead` again with the PR or its findings. Merging remains the human's.
+Codex reviews pull requests through the GitHub integration. Opening a PR for review triggers the initial review; posting the literal comment `@codex review` requests another review. Use that trigger after a validated fix push only when the user authorized the review request. Report the observed request result without unsolicited polling or waiting. Later findings resume through a user request concerning the same PR. Merging remains the user's decision.
 
 No CI or required status check is currently defined in the repository.
 
-## What the pipeline may write
+## Operation conditions
 
-The `lead` alone may write:
+- **Read PR or diff** — the requested task requires that information from the bound repository.
+- **Create or recover workspace** — a requested commit/PR endpoint or explicit isolation request authorizes one story branch and worktree under `.worktrees/`, following the configured derivation. Recover the existing story branch/worktree for repair; do not create a second workspace.
+- **Commit** — the user requested a commit or PR endpoint. Stage only attributable paths in the authorized story worktree, without forced staging, and use Conventional Commits. A local-change-only request does not authorize commits.
+- **Push** — publication of the same change is requested and required validation and acceptance have passed. Push only the story branch to `origin`; first push when opening the PR, later pushes for verified repairs. Keep intermediate checkpoints local; blocking findings prevent a push.
+- **Open PR** — the user requested a PR. Open one against `master` in the bound repository and retain its real returned URL. Reuse the existing PR for story repair.
+- **Update PR** — the requested publication/repair scope includes that same PR; title/body must reflect the same change and preserve unused metadata restrictions. Do not widen scope or create another PR.
+- **Comment or trigger review** — the user explicitly authorized the message or review request on that PR. Configuration alone does not authorize communication. Record the observed result; later findings resume through a user request.
+- **Remove worktree or branch** — user-controlled cleanup after merge; no automated grant.
 
-- one story branch and one worktree under `.worktrees/`;
-- commits in that worktree;
-- the story branch on `origin`, once when opening the PR and once per later fix round;
-- one PR against `master`; and
-- updates and comments on that same PR, including `@codex review` to re-fire review.
-
-Everything else is the human's:
+The following operations have no automated grant:
 
 - Never merge or enable auto-merge.
 - Never force-push, amend a pushed commit, rebase a pushed branch, or delete a branch,
@@ -125,6 +123,3 @@ Everything else is the human's:
 - Never open a second PR for a story, and never close one.
 - Never cut a release or tag.
 - Never touch another repository or add another remote.
-
-No worker receives forge write access. Workers may only read the worktree and the commit
-references the lead gives them.

@@ -1,4 +1,4 @@
 # managed-by: ca77y-library
 name = "ca77y_library_scribe"
-description = "Ca77y library writer for provenance-preserving raw notes and synthesized wiki updates."
+description = "Draft a research specification, persist supplied evidence into assigned raw notes, or integrate supplied evidence into synthesis and shared metadata as the sole designated integration writer. Do not independently research new questions. Read the project's own templates and conventions; preserve source passages, provenance, and uncertainty."
 manual = "../../../agents/scribe/AGENT.md"

@@ -1,0 +1,4 @@
+# managed-by: ca77y-engineering
+name = "ca77y_engineering_coder"
+description = "Implement a bounded change and author meaningful regression tests against the supplied validated specification. A nontrivial implementation without a validated spec returns that missing prerequisite before production. Trivial changes with established intent and no material semantic impact retain the entry-point exemption. A material design mismatch or change to the validated contract goes back to the main agent for spec correction and fresh validation before affected implementation. Never change acceptance criteria to fit the implementation."
+manual = "../../../agents/coder/AGENT.md"

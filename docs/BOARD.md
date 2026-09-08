@@ -1,8 +1,6 @@
 # The board
 
-How this project tracks work, read directly at this fixed path — `docs/BOARD.md` — by
-every board-touching agent, with no per-run resolution step in between. Keep it true,
-because the pipeline binds real calls to what it says.
+This declaration binds board operations to the project below. Authorization comes from the user's actual request and established conversation scope. Configuring an operation does not request its execution.
 
 ## The board
 
@@ -44,7 +42,7 @@ A Linear issue. The title is an action-verb story title; the body is Markdown in
 - **Priority** — `1` Urgent · `2` High · `3` Medium · `4` Low.
 - **Identity** — the issue identifier (`SMR-200`). It is the stable name across board,
   branch, PR, and spec. A spec uses the lowercase identifier and a concise slug, for
-  example `docs/specs/smr-200-writer-spec-pass-board-access.md`. Branch derivation is
+  example `docs/specs/smr-200-card-content-access.md`. Branch derivation is
   owned by [`FORGE.md`](./FORGE.md).
 - **Dependencies** — Linear blocking relations, supplied as `blockedBy` and `blocks` to
   `mcp__codex_apps__linear_save_issue`. There are no sub-issues: one story is one issue
@@ -64,44 +62,29 @@ cosmetic round-trip quirk, not a content change.
 
 `Backlog` · `Todo` · `In Progress` · `In Review` · `Done` · `Canceled` · `Duplicate`.
 
-| From → to | Who | When |
-| --- | --- | --- |
-| `Backlog` → `Todo` | **human** | the story is refined and ready to start |
-| `Todo` → `In Progress` | `lead` | the run starts, at workspace creation |
-| `In Progress` → `In Review` | `lead` | the PR is open |
-| `In Review` → `Done` | **human** | the work is verified |
-| anything → `Canceled` / `Duplicate` | **human** | abandoning or folding work is a product call |
+| From → to | Authorization and preconditions |
+| --- | --- |
+| `Backlog` → `Todo` | User decision that the story is refined and ready; no automated grant. |
+| `Todo` → `In Progress` | Authorized implementation of this identified card has started and its workspace is established; verify current state is Todo. |
+| `In Progress` → `In Review` | The requested publication endpoint has been reached for the same card and its PR exists; verify current state is In Progress. |
+| `In Review` → `Done` | User decision; no automated grant. |
+| anything → `Canceled` / `Duplicate` | User decision; no automated grant. |
 
-- **work started** → `In Progress` (expect `Todo` before writing)
-- **awaiting review** → `In Review` (expect `In Progress` before writing)
-- Terminal values — `Done`, `Canceled`, and `Duplicate` — are the human's.
+Only the two middle transitions may be automated. Never move Backlog through the readiness gate. Terminal values — `Done`, `Canceled`, and `Duplicate` — remain the user's decisions.
 
 ## Visibility
 
 A status write is the Linear call itself and is visible immediately. No checkout is
 involved; never write a board transition into a repository, worktree, or branch.
 
-## What the pipeline may write
+## Operation conditions
 
-Permitted and expected:
+- **Locate, read, search** — relevant read access follows the requested task; query only its authorized scope in the configured project.
+- **Create** — the user requested filing a card. Create in the bound project/team at `Backlog` using the schema above. A proposal-only request does not authorize filing.
+- **Transition** — only the two middle transitions and preconditions above.
+- **Attach the PR** — attaching it is within the authorized card/publication task. Add the real URL returned by the PR creation operation in [`FORGE.md`](./FORGE.md) to the matching issue's `links`; never invent a URL or attach another task's PR.
+- **Comment** — progress, hazards, and handoff information on the in-scope issue, only when posting those messages is explicitly authorized. Configuration alone does not authorize communication.
+- **Edit card content** — description, acceptance criteria, labels, priority, and relations may be corrected during specification preparation when the user authorized card refinement and the correction preserves the goal. Record criterion corrections before implementation.
+- **Apply retained follow-ups** — after acceptance, apply only previously identified follow-ups whose exact update is already authorized. Introduce no criteria rewrite, new goal, or terminal transition.
 
-- **create** — the `analyst` files new issues at `Backlog`.
-- **transition** — the `lead` makes only the two middle transitions above.
-- **attach the PR** — the `lead` adds the URL returned by [`FORGE.md`](./FORGE.md)'s
-  *open the change* binding to the issue through the `links` field.
-- **comment** — progress, production hazards, and the handoff summary may be posted to
-  the issue.
-- **edit card content** — during the writer's spec pass, the description, acceptance
-  criteria, labels, priority, and relations may be corrected when the declaration and
-  role instructions authorise it. After the acceptance gate passes, the lead may apply
-  board follow-ups the writer retained.
-
-The pipeline never moves a status through a human gate. It never changes an acceptance
-criterion to match an implementation, and it never changes criteria between the build
-and the acceptance gate. A writer may correct a defective criterion during the spec
-pass and record the deviation; a criterion found mis-worded during the acceptance gate
-is escalated to the human for correction in a later run.
-
-Everything outside the authority listed above — especially terminal states and a
-rewrite of the product goal — is the human's. When it is unclear whether an edit is a
-correction or a changed goal, the pipeline reports it instead of writing.
+Never change an acceptance criterion to match an implementation or change criteria between implementation and acceptance. A mis-worded criterion found during acceptance returns to the user for correction in a later run. Goal changes and readiness/terminal decisions have no automated grant. Report ambiguous correction-versus-goal changes instead of writing them.

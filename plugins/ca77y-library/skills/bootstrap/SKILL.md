@@ -1,81 +1,34 @@
 ---
 name: bootstrap
-description: Scaffold a project's `library/` research vault (the fixed layout `researcher`, `librarian`, `scribe`, and `clerk` read and write), optionally its Obsidian vault config too — run once, before the first research run. Does not run research, write wiki pages, or touch `docs/BOARD.md`.
+description: Create or safely complete a project's Markdown research library, with optional requested Obsidian settings. Use for one-time library setup or explicitly scoped scaffold repair, not research or routine maintenance.
 ---
 
-You scaffold the fixed `library/` layout every `ca77y-library` agent expects, in a project that doesn't have one yet. `researcher`, `librarian`, `scribe`, and `clerk` read and write `library/...` at fixed paths with no discovery step; you make that layout exist, once, correctly — populating it is theirs.
+Create the fixed `library/` layout from `resources/library/`. It works as plain Markdown and requires no engineering plugin. Setup creates directories, instructions, navigation, taxonomy, provenance log, and raw/wiki/topic templates; it does not research or create source content.
 
-## Before you start
+## Ledger ownership
 
-- **Check whether the library already exists.** If `library/_meta/librarian.md` is already there, stop and report what exists instead of touching it — this is a create-once scaffold, not a repair tool. If part of the structure exists, tell the user exactly what's missing and confirm before filling the gap; never overwrite a file that already has content.
-- **Gather what you cannot invent, and confirm every guess before writing:**
-  - **Project name** — for the `README.md` opening line and the taxonomy scope line. Read the project's own `README.md` or `package.json` first; ask only if neither gives a clear name.
-  - **One-sentence domain description** — what this library will hold research about (e.g. "search providers, crawling, anti-bot systems, archival, MCP, deployment, and reliability"). Infer a draft from the project's `README.md`/`AGENTS.md` if one exists, but confirm it with the user rather than shipping a guess.
-  - **A handful of starter domain tags** (5-10) naming the concrete things this project's research will be about — technologies, providers, protocols, subsystems. Ask the user directly; do not invent a taxonomy for a domain you haven't been told about. If nothing concrete is offered, leave the `## Domain tags` section with just an HTML comment noting it starts empty.
-- **Ask whether to also bootstrap the project's Obsidian vault config.** Default to **yes** if `.obsidian/` already exists in the project (then merge rather than overwrite — see below); otherwise ask. A "no" still leaves the library fully usable as plain Markdown — `_meta/librarian.md` requires no plugin.
+On every invocation, open or create the run's durable ledger using the [ledger procedure](../research/references/ledger.md) and [template](../research/assets/ledger.md) before production or delegation. The main agent is its sole writer, including for trivial work and runs without subagents. Record returned subagent IDs/canonical handles, assignments and progress; update before dispatch and waits, immediately after dispatch, on results and gate/failure changes, and before handoff or the final response. Reuse the ledger on resume and across entry points within the same run, preserving its failure history. A separate later user request gets a new run ledger; prior run history remains context, not its attempt count. Link the ledger in the final response.
 
-## What you create
+Read [scaffold details](references/scaffold.md) for the resource map and token substitutions. Inspect the target library and root instructions first. Fill missing scaffold files without rewriting existing notes, wiki pages, metadata, or customizations. If source-provider guidance is supplied, include it in the new conventions; this repository uses `webtools`. Missing provider access is reported without substitution.
 
-```
-library/
-├── README.md
-├── AGENTS.md
-├── _meta/
-│   ├── index.md
-│   ├── taxonomy.md
-│   ├── log.md
-│   ├── librarian.md
-│   └── templates/
-│       ├── raw-note.md
-│       ├── wiki-page.md
-│       └── topic-moc.md
-├── raw/
-│   └── README.md
-└── wiki/
-    └── README.md
-```
+Merge the bundled root library pointer into an appropriate existing `AGENTS.md` section without duplication; do not create a root instruction file solely for the pointer. Obsidian is optional and separately requested from the basic scaffold: read [Obsidian setup](references/obsidian.md) only for that scope. Preserve settings and keep the scaffold useful without plugins or services.
 
-Every file under `resources/library/` in this skill is a **real file to copy**, not prose to transcribe — copy the whole `resources/library/` tree into the target project's `library/` preserving structure, then edit only the copies (never `resources/`) to fill in tokens. `AGENTS.md`, the three `_meta/templates/` files, and `raw/README.md` / `wiki/README.md` copy over with no edits at all; `_meta/librarian.md`'s body is likewise invariant, but its header carries the `{{TODAY}}` and `{{PROJECT_NAME}}` tokens.
+The main agent may produce the scaffold or delegate exclusive paths to `ca77y_library_scribe`. A fresh `ca77y_library_clerk` validates the setup spec and a different fresh clerk validates the scaffold. Give each the supplied setup scope and templates; missing output conventions are not prerequisites for this explicit bootstrap. Ordinary `research` reads resulting conventions without running setup; `ask` reports a missing library without creating one.
 
-**Token replacement.** After copying, replace every `{{TOKEN}}` in the copied files (never in `resources/` itself) with the values gathered above:
+## Setup gates and ownership
 
-| Token | Appears in | Value |
-| --- | --- | --- |
-| `{{PROJECT_NAME}}` | `README.md`, `_meta/index.md` (via title text), `_meta/taxonomy.md`, `_meta/log.md`, `_meta/librarian.md` | the project's name |
-| `{{TODAY}}` | `_meta/index.md`, `_meta/taxonomy.md`, `_meta/log.md`, `_meta/librarian.md` | today's date, `YYYY-MM-DD`, the same value in every file for one bootstrap pass |
-| `{{DOMAIN_ONE_LINER}}` | `_meta/index.md` | the confirmed one-sentence domain description |
-| `{{DOMAIN_TAGS}}` | `_meta/taxonomy.md` | a Markdown bullet list of the confirmed starter tags, one per line as `` - `tag-name` ``, or the placeholder HTML comment when none were given |
+Read existing files before writes and preserve unrelated content. Infer supported facts from the request and repository; ask a focused question for unresolved choices affecting authority or destinations. A request to configure an operation does not authorize executing it. A fully configured project needs no changes; a rerun fills missing files within the requested scope and repairs existing content only when that repair is authorized. Report conflicts instead of broadening permissions.
 
-`_meta/templates/*.md` also contain `<% tp.file.title %>` / `<% tp.date.now(...) %>` — those are **Templater's own placeholders**, not this skill's tokens. Copy them exactly as-is.
+Nontrivial setup follows **written setup specification + fresh validation → scaffold production + different fresh validation**. Draft a proportionate spec in the project’s durable spec location, normally `docs/specs/`, recording setup scope, facts and their sources, choices, artifacts, preservation constraints, acceptance, and verification. The setup spec itself needs no recursively validated spec. On a clean project, supplied facts and bundled templates are inputs; the missing declarations or library conventions being created are expected outputs, not prerequisites. Existing applicable project rules still bind.
 
-Write every file even when a section will start empty (`raw/`, `wiki/`) — an empty directory with just its `README.md` is the expected steady state. Do not dispatch the crew from this pass (per *Hard rules*).
+The main agent owns the result and may produce it directly. Give any optional production worker the absolute project and exclusive paths, bounded outcome, acceptance source, concurrent ownership, and remaining attempt allocation. Preserve others’ changes. Production workers return artifacts and unexecuted checks, not a verdict. Use `followup_task` only for production continuation and `wait_agent` to collect results. Missing production roles permit direct scoped work; a missing required validator blocks the gate without generic substitution or main-agent validation.
 
-## Obsidian bootstrap (if the user opted in)
+Every check, including optional mechanical checks and corrections, uses a newly spawned validator with `fork_turns: "none"`. Supply exact artifacts, spec identity, source facts, scope, and actual checks without an expected verdict. The validator establishes any missing digest and reports pass/fail/unverified without editing. Later candidate changes invalidate affected evidence; a new validator evaluates corrections. Material spec changes return to the spec gate before affected production. Trivial edits with settled intent and no material semantic impact may skip a written spec, never final validation.
 
-`resources/obsidian/` holds the vault config for the three plugins the library itself uses — `dataview` (index/MOC queries), `templater-obsidian` (the `_meta/templates/` scaffolds), `breadcrumbs` (the `up`/`related` links `clerk` audits). This skill only knows about the library; it never assumes any other plugin's vault needs.
+## Models, attempts, and completion
 
-- If `.obsidian/` does **not** exist yet: copy `resources/obsidian/community-plugins.json` and `resources/obsidian/app.json` to `.obsidian/community-plugins.json` and `.obsidian/app.json` verbatim — no tokens in either file.
-- If `.obsidian/` **already exists**: don't overwrite `app.json` (it may carry the user's own settings). Instead, merge the three plugin ids into the existing `community-plugins.json`'s array (dedup, keep any plugins already listed there).
-- Append the contents of `resources/obsidian/gitignore-additions.txt` to the project's `.gitignore` (create one if none exists), skipping any line already present.
-- **This skill does not vendor the plugin binaries** (`main.js`/`manifest.json`/`styles.css`) — third-party compiled code that goes stale once copied. Say so in your report, and tell the user to install Dataview, Templater, and Breadcrumbs from Obsidian's Community Plugins browser (Settings → Community plugins → Browse) — `community-plugins.json` already lists them, so each enables itself once installed.
+Select an available model and supported reasoning effort for each bounded assignment from actual host capabilities, independently of role identity. Between plausible tiers start on the lower capable tier; demanding work may start stronger. State a short rationale. Escalation changes capability, not scope or the allowance.
 
-## Wire it into the project's root `AGENTS.md`
+The budget covers one run from the initiating user prompt through resolution of that request, not the lifetime of a PR or artifact. A separate later request starts a new run with its own budget; reviewing comments or discovering defects does not itself consume attempts. Continuations and interruptions of the same unfinished run retain its count. Track at most three failed solution attempts for the same unresolved outcome across specification, implementation, validators, workers, models, and resumptions. An evaluated approach, including one that proves unworkable, consumes an attempt; individual edits/checks in one candidate evaluation do not. Share problem identity and remaining allocation; no private worker loops. Restore failure history from the mandatory ledger before resuming and keep it current throughout the run. At the third failure stop the entire run and background work; preserve useful artifacts and evidence and report the three approaches and required decision/access or explicit additional-attempt authorization. No fourth attempt without that authorization, recorded alongside the history.
 
-Point the root `AGENTS.md` at the library rather than restating its conventions there:
-
-- If the project has a root `AGENTS.md` with a directory/layout listing, add one line for `library/` to it (e.g. `library/   # Markdown research wiki: raw sources, synthesis, and metadata`).
-- Append `resources/root-agents-md-library-section.md` (or merge it into an existing similarly-named section, adapting the wording to the surrounding file's voice rather than duplicating a section).
-- If the project has no root `AGENTS.md` at all, don't create one — that's a separate concern (the `init` skill). Say so in your report and let the user decide.
-
-## Hard rules
-
-- **Never overwrite an existing `library/`.** This is a create-once scaffold; a repair or restructure is a separate, explicit ask.
-- **Never invent domain-specific taxonomy.** Only tags the user confirmed — the taxonomy grows from real research, not from guessing a project's future needs.
-- **Never fabricate the project description.** Draft it from what you can read in the project, but always confirm it with the user before it ships in `_meta/index.md`.
-- **Stay off `docs/`.** `docs/BOARD.md` and anything else under `docs/` is unrelated to this library and not yours to create or assume exists — a project may run `ca77y-library` alone.
-- **Never overwrite an existing `.obsidian/app.json`** or any other pre-existing Obsidian config file — merge into `community-plugins.json` and `.gitignore` only, as described above.
-- **Never dispatch the library crew from inside this skill.** You create the empty scaffold only; `researcher`, `librarian`, `scribe`, and `clerk` are invoked separately, afterward, by the user.
-
-## Report
-
-List the files you created (library and, if opted in, Obsidian config), the project-specific fields you filled in and where each came from (told by the user vs. inferred-then-confirmed), whether and how you wired the root `AGENTS.md`, whether Obsidian was bootstrapped and the plugin-install step still pending, and the natural next step: invoke `ca77y-library:researcher` for the project's first deep dive.
+Return created/updated paths, preserved existing content, validation evidence tied to the exact spec and candidate, and unresolved setup gaps. Do not claim completion while a required gate is failed or unverified. Report missing tools as concrete prerequisites, without inventing access or provisioning replacement tools.

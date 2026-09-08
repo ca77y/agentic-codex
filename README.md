@@ -1,57 +1,21 @@
-# ca77y-agentic for Codex
+# ca77y agentic toolkit for Codex
 
-This repository implements the ca77y agentic toolkit as two native Codex plugins using Codex skills, first-class custom subagents, and collaboration primitives.
+Two independently installable plugins provide four normal entry points. The main agent owns the requested outcome, evidence, dynamic model selection, and a shared limit of three failed solution attempts for an unresolved problem within one run from user prompt to resolution. A separate later request, including PR comment review, starts its own budget; reading comments or discovering defects does not consume attempts.
 
-## Plugins
+| Plugin | Normal work | One-time setup | Supporting agents |
+| --- | --- | --- | --- |
+| Engineering | `shape` produces proposals/specs; `deliver` implements or repairs through the authorized local, commit, or PR endpoint. | `bootstrap` creates or completes board and forge declarations. | coder, QA, writer, auditor |
+| Library | `research` investigates and saves cited evidence; `ask` answers from existing library knowledge without internet requests or library writes. | `bootstrap` creates or safely completes the Markdown library; Obsidian is optional. | researcher, librarian, scribe, clerk |
 
-### `ca77y-engineering`
+Both plugins also provide `install-subagents`. Nontrivial changes require a written spec and fresh validation before production, then a different fresh validator for the candidate. Trivial changes can skip the written spec but still require fresh validation. Production delegation is optional. Missing production roles permit direct scoped work; missing required validators block the affected gate.
 
-An idea-to-open-PR pipeline:
+Engineering uses a fresh auditor for spec readiness and document acceptance, or fresh QA for code behavior and tests. One adequate final evaluation can include affected documentation and mechanical checks. Library uses fresh clerks for research specs, answers, evidence, and integrity. Production leaves author artifacts and tests; validators report findings and execute checks without repairing the candidate.
 
-`analyst → writer → auditor → junior-coder or senior-coder → qa → auditor → writer → lead handoff`
+Researchers return new-source findings and provenance. Librarians retrieve existing knowledge read-only. The main agent or one designated scribe integrates synthesis and shared metadata after raw-note writers finish. Research follows project conventions and the configured provider; this repository requires `webtools` for internet research and reports its absence without provider substitution.
 
-- `analyst` shapes board-ready stories and runs product-fit checks.
-- `lead` orchestrates one task, one worktree, one branch, and one PR.
-- `board` authors or inspects `docs/BOARD.md`, the declaration for tracker bindings and write authority.
-- `forge` authors or inspects `docs/FORGE.md`, the declaration for git, remote, PR, and review bindings.
-- `writer`, `auditor`, `junior-coder`, `senior-coder`, and `qa` are isolated first-class Codex custom subagents. They are not callable skills; their complete operating manuals are embedded in their installed agent definitions.
+Every entry point, including bootstrap and installation, keeps a durable ledger owned by the main agent. It records progress, returned subagent IDs/canonical handles, assignments, gate evidence, and failure history before waits and handoffs. Reuse it across skills and resumptions of that run; a separate later user request gets a new ledger and count, with prior ledgers retained as context. Project ledgers use `<temp-folder>/ledgers/<run-id>.md`, with the temp folder read from the forge declaration (normally `docs/FORGE.md`) and defaulting to `.tmp/` under the project root. Without a project, use `$CODEX_HOME/ledgers/` (default `~/.codex/ledgers/`). Before creating new history, search all registered Git worktrees using each checkout’s configuration and legacy ledger directory. Before ledger writes, verify Git ignore protection and add a local exclude rule for the ledger directory when needed. Keep ledgers outside the research library and installed plugin caches, and preserve them through scratch cleanup and completion. Each plugin ships a template: [engineering](plugins/ca77y-engineering/skills/deliver/assets/ledger.md) and [library](plugins/ca77y-library/skills/research/assets/ledger.md).
 
-The pipeline never guesses a board or forge. A missing board means trackerless operation; a missing `docs/FORGE.md` stops the lead before any branch, worktree, or remote write.
-
-### `ca77y-library`
-
-A project-local Markdown research crew:
-
-- `bootstrap` creates the fixed `library/` structure and its `AGENTS.md` guidance.
-- `researcher` runs deep dives and orchestrates bounded parallel research.
-- `librarian`, `scribe`, and `clerk` are isolated, agent-only roles: they answer from the wiki, persist research, and audit library health without appearing as callable skills.
-
-The library plugin is standalone. Engineering uses it when installed and falls back to reading wiki pages directly when it is absent.
-
-## Codex-native orchestration
-
-User entry points and orchestration live in discoverable plugin skills. Leaf execution roles do not: each lives under the plugin's separate `agents/` tree with a non-discoverable `AGENT.md` source manual, and the managed installer compiles that manual plus every role reference into the installed TOML's `developer_instructions`.
-
-Orchestrators spawn those named, self-contained custom subagents with an explicit model and reasoning effort, continue resumable workers with `followup_task`, and collect final reports with `wait_agent`. Fresh custom-agent dispatches use `fork_turns: "none"` and a self-contained task instead of copying the main conversation. The parent sees only the agent's routing metadata; the full worker procedure exists only in the child context. Orchestrators explicitly refuse to replace a missing named agent with a generic worker.
-
-Before deliberately overlapping workers in one story worktree, the engineering lead records each live worker's planned edit paths and tells every new or resumed worker what the others are expected to edit. If it cannot name those paths, it sequences the dispatches. The five engineering delivery workers preserve or report unexplained modifications instead of reverting them, and they verify a tool-attribution claim before recording it as fact. Workers act on the notice they receive; the lead remains responsible for detecting and deciding concurrency.
-
-The plugin/skill catalog at the top of a Codex task lists only user-callable workflows and orchestrators; it is not the subagent registry. The installed TOML definitions are selected through `spawn_agent`'s agent type and appear in the app's **Subagents** activity only after a role is spawned.
-
-Installed custom-agent names:
-
-- Engineering: `ca77y_engineering_writer`, `ca77y_engineering_auditor`, `ca77y_engineering_junior_coder`, `ca77y_engineering_senior_coder`, and `ca77y_engineering_qa`.
-- Library: `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`.
-
-The translated model ladder is:
-
-| Tier | Codex model |
-| --- | --- |
-| high-capability | `gpt-5.6-sol` |
-| balanced | `gpt-5.6-terra` |
-| fast | `gpt-5.6-luna` |
-
-The user-owned `--fast` flag makes the orchestrator pass a model one tier lower to the same custom-agent name while preserving its reasoning effort. There are no duplicate fast agent definitions.
+Project authority lives in [`docs/BOARD.md`](docs/BOARD.md), [`docs/FORGE.md`](docs/FORGE.md), and [`library/_meta/librarian.md`](library/_meta/librarian.md). A local implementation request does not imply commits or publication; a proposal does not imply filing a card. Normal work consumes setup without running bootstrap.
 
 ## Install locally
 
@@ -63,18 +27,33 @@ codex plugin add ca77y-engineering@personal
 codex plugin add ca77y-library@personal
 ```
 
-Install the plugins' custom subagents:
+Install the selected plugins' custom agents with Python 3.11 or newer:
 
 ```bash
 python3 plugins/ca77y-engineering/skills/install-subagents/scripts/install_agents.py
 python3 plugins/ca77y-library/skills/install-subagents/scripts/install_agents.py
 ```
 
-Start a new Codex task after installation so both the plugin skills and custom-agent catalog reload. Invoke orchestrator skills by their qualified names, for example `$ca77y-engineering:lead` or `$ca77y-library:researcher`, or describe the matching task naturally. The orchestrators then dispatch agents such as `ca77y_engineering_writer`, `ca77y_engineering_qa`, and `ca77y_library_researcher`.
+Run the same installer after source updates. It embeds each leaf's `agents/<role>/AGENT.md` and copies conditional references under `~/.codex/agents/.ca77y-engineering/` or `.ca77y-library/`, so installed references survive checkout/cache removal. Only marked files are updated or removed; unmanaged conflicts are refused and other-plugin files are preserved. Agent definitions contain no fixed model or reasoning settings.
 
-## Validate
+Start a new Codex task after installation to reload skills and the custom-agent catalog. `deliver` requires explicit invocation, such as `$ca77y-engineering:deliver`, and is never selected automatically. Other skills can be invoked by their qualified name, such as `$ca77y-library:research`, or by describing matching work naturally. Engineering dispatches `ca77y_engineering_coder`, `ca77y_engineering_qa`, `ca77y_engineering_writer`, and `ca77y_engineering_auditor`. Library dispatches `ca77y_library_researcher`, `ca77y_library_librarian`, `ca77y_library_scribe`, and `ca77y_library_clerk`.
+
+## Development validation
+
+Diagnostics are optional installation utilities: `--check` inspects source without installing; `--check-installed` reports read-only drift; `--target` selects a temporary destination. Checks requested through a skill are delegated to a fresh engineering auditor or library clerk.
+
+Use Python 3.11 or newer with PyYAML available. Run every skill quick validator, then both plugin validators and installer suites:
 
 ```bash
-python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-engineering
-python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-library
+(
+  for skill in plugins/*/skills/*/; do
+    python3 /Users/catty/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$skill" || exit $?
+  done
+  python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-engineering || exit $?
+  python3 /Users/catty/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/ca77y-library || exit $?
+  python3 plugins/ca77y-engineering/skills/install-subagents/scripts/test_install_agents.py || exit $?
+  python3 plugins/ca77y-library/skills/install-subagents/scripts/test_install_agents.py || exit $?
+)
 ```
+
+The installer suites exercise real plugin resources and isolated destinations, including stale cleanup, unmanaged conflicts, drift, and reference survival after source removal. Mechanical checks establish format and packaging validity; bounded scenarios assess instruction behavior separately. The acceptance sources are [supporting agents and skill integration](docs/specs/plugin-specialists-and-skill-integration.md) and [orchestrator ledgers](docs/specs/orchestrator-ledgers.md).
