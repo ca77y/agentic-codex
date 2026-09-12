@@ -18,7 +18,7 @@ Temp folder: `.tmp/` relative to the project root unless a different path is con
 {{COMMIT_CONVENTION_AND_AUTHORIZATION}}
 {{LOCAL_CHECKPOINTS_AND_VALIDATED_PUSH_CONDITIONS}}
 
-Configuration alone does not authorize execution. A local edit request does not authorize commits or publication. Comments and review requests require explicit user authorization.
+Configuration alone does not authorize execution. Explicit invocation of a workflow whose endpoint is a PR authorizes its task branch/workspace, attributable commits, verified push, and PR creation or update without a second publication request. An ordinary implementation request outside that workflow may remain local in the default checkout and does not authorize commits or publication. Comments and review requests require explicit user authorization.
 
 ## Operations
 

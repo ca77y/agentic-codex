@@ -19,7 +19,7 @@
     ],
     "defaultPrompt": [
       "Shape this idea into a proposal with observable acceptance criteria.",
-      "Implement this change locally and verify it.",
+      "Use $ca77y-engineering:deliver to implement this change and open a verified PR.",
       "Repair the findings on this existing PR."
     ]
   }

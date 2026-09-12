@@ -4,7 +4,7 @@ Two independently installable plugins provide four normal entry points. The main
 
 | Plugin | Normal work | One-time setup | Supporting agents |
 | --- | --- | --- | --- |
-| Engineering | `shape` produces proposals/specs; `deliver` implements or repairs through the authorized local, commit, or PR endpoint. | `bootstrap` creates or completes board and forge declarations. | coder, QA, writer, auditor |
+| Engineering | `shape` produces proposals/specs; explicitly invoked `deliver` implements or repairs through a verified PR. | `bootstrap` creates or completes board and forge declarations. | coder, QA, writer, auditor |
 | Library | `research` investigates and saves cited evidence; `ask` answers from existing library knowledge without internet requests or library writes. | `bootstrap` creates or safely completes the Markdown library; Obsidian is optional. | researcher, librarian, scribe, clerk |
 
 Both plugins also provide `install-subagents`. Nontrivial changes require a written spec and fresh validation before production, then a different fresh validator for the candidate. Trivial changes can skip the written spec but still require fresh validation. Production delegation is optional. Missing production roles permit direct scoped work; missing required validators block the affected gate.
@@ -15,7 +15,7 @@ Researchers return new-source findings and provenance. Librarians retrieve exist
 
 Every entry point, including bootstrap and installation, keeps a durable ledger owned by the main agent. It records progress, returned subagent IDs/canonical handles, assignments, gate evidence, and failure history before waits and handoffs. Reuse it across skills and resumptions of that run; a separate later user request gets a new ledger and count, with prior ledgers retained as context. Project ledgers use `<temp-folder>/ledgers/<run-id>.md`, with the temp folder read from the forge declaration (normally `docs/FORGE.md`) and defaulting to `.tmp/` under the project root. Without a project, use `$CODEX_HOME/ledgers/` (default `~/.codex/ledgers/`). Before creating new history, search all registered Git worktrees using each checkout’s configuration and legacy ledger directory. Before ledger writes, verify Git ignore protection and add a local exclude rule for the ledger directory when needed. Keep ledgers outside the research library and installed plugin caches, and preserve them through scratch cleanup and completion. Each plugin ships a template: [engineering](plugins/ca77y-engineering/skills/deliver/assets/ledger.md) and [library](plugins/ca77y-library/skills/research/assets/ledger.md).
 
-Project authority lives in [`docs/BOARD.md`](docs/BOARD.md), [`docs/FORGE.md`](docs/FORGE.md), and [`library/_meta/librarian.md`](library/_meta/librarian.md). A local implementation request does not imply commits or publication; a proposal does not imply filing a card. Normal work consumes setup without running bootstrap.
+Project authority lives in [`docs/BOARD.md`](docs/BOARD.md), [`docs/FORGE.md`](docs/FORGE.md), and [`library/_meta/librarian.md`](library/_meta/librarian.md). Explicit `deliver` invocation authorizes the task branch/worktree, attributable commits, verified push, and PR creation or update. Implementation requested without `deliver` may remain uncommitted on `master`; a proposal does not imply filing a card. Normal work consumes setup without running bootstrap.
 
 ## Install locally
 
