@@ -6,3 +6,7 @@
 
 # Preserve ignore protection for existing scratch files
 /tmp/
+
+# Generated Python bytecode
+__pycache__/
+*.py[cod]
