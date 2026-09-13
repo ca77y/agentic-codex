@@ -1,5 +1,5 @@
 # Proposal and specification production
 
-Use the requested durable location and source material. State problem, scope and exclusions, intended approach, material constraints, observable acceptance criteria, and a workable verification plan. Preserve user requirements separately from assumptions and design choices. A proportional spec needs no score, fixed template, card, or prevalidated copy of itself.
+Use the requested durable location and source material. State problem, scope and exclusions, intended approach, material constraints, observable acceptance criteria, and a workable verification plan. Preserve user requirements separately from assumptions and design choices. Every execution spec needs an overall integer complexity score from 1 to 10 with a short rationale and the same for each task, including an explicitly identified task in a one-task spec. Use the supplied delivery scoring bands; overall integration/uncertainty may differ from individual task complexity. Add missing scores when preparing a reused spec for delivery. A proportional spec needs no fixed template, card, or prevalidated copy of itself.
 
 Identify unresolved material choices rather than inventing them. Return a draft for fresh auditor validation. A requested card can be prepared as local content, but the main agent owns any authorized external operation.
