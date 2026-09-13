@@ -1,6 +1,6 @@
 {
   "name": "ca77y-engineering",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "Outcome-driven proposal shaping and verified delivery for Codex, with independent validation and project-declared authority.",
   "author": {
     "name": "ca77y"
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Ca77y Engineering",
     "shortDescription": "Shape proposals and deliver verified, authorized changes.",
-    "longDescription": "Shape proposals and deliver authorized changes with bounded coder and writer support and fresh QA or auditor validation. Bootstrap configures project board and forge declarations once. Dynamic model selection and one shared three-attempt stop rule support the main agent.",
+    "longDescription": "Shape proposals and deliver authorized changes with bounded coder and writer support and fresh QA or auditor validation. Bootstrap configures project board and forge declarations once. Delivery favors smaller models using complexity scores and three initial attempts followed by one attempt per higher tier through Astra. Standalone shaping and setup retain a shared three-failure stop.",
     "developerName": "ca77y",
     "category": "Productivity",
     "capabilities": [

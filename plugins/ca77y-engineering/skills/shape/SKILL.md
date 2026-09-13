@@ -17,7 +17,7 @@ Read `docs/BOARD.md` only when a board operation applies. Card creation or updat
 
 ## Completion and specification gate
 
-The proposal states the problem and intended outcome, scope and exclusions, observable acceptance criteria, material constraints/dependencies, unresolved decisions, and supporting evidence. For a specification intended for execution, use the project spec location, normally `docs/specs/`, and include the intended approach and how criteria will be verified.
+The proposal states the problem and intended outcome, scope and exclusions, observable acceptance criteria, material constraints/dependencies, unresolved decisions, and supporting evidence. For a specification intended for execution, use the project spec location, normally `docs/specs/`, and include the intended approach and how criteria will be verified. Require an overall integer complexity from 1 to 10 with rationale and the same for each task (at least one identified task); score tasks independently from overall integration complexity. Use the [delivery complexity matrix](../deliver/SKILL.md#complexity-and-model-selection) when preparing an execution spec and its assignments.
 
 A nontrivial change alters behavior, contracts, data, architecture, configuration semantics, or operational procedures, or needs material design decisions. Even a one-line authority change qualifies; when uncertain, use the gate. Every such change follows **written specification + fresh validation → implementation + fresh validation**. A proposal is preparation of that specification, not authority to implement it. An existing spec can be reused after fresh validation against the current request and context; no duplicate is required. High-risk or materially uncertain designs need independent challenge within specification validation.
 
@@ -27,7 +27,7 @@ Optionally delegate bounded proposal, spec, or documentation drafting to `ca77y_
 
 ## Ownership and evidence
 
-The main agent owns interpretation, decisions, production, integration, evidence, and the final response. Work directly or delegate bounded production when parallelism or context isolation helps. Use the configured production roles named here when helpful; delegation is optional. Work directly within scope if an optional production role is unavailable. Give each worker the bounded outcome, acceptance source, absolute project and allowed paths, concurrent owners, and problem identity with remaining attempt allocation. Give writers exclusive paths, identify concurrent owners, and require preservation of others' work. Use `followup_task` only for continued production, and `wait_agent` to collect results. Never create another user-owned Codex task unless requested.
+The main agent owns interpretation, decisions, production, integration, evidence, and the final response. Work directly or delegate bounded production when parallelism or context isolation helps. Use the configured production roles named here when helpful; delegation is optional. Work directly within scope if an optional production role is unavailable. Give each worker the bounded outcome, acceptance source, absolute project and allowed paths, concurrent owners, problem identity with remaining attempt allocation, and the scored assignment with the applicable delivery matrix when preparing an execution spec. Give writers exclusive paths, identify concurrent owners, and require preservation of others' work. Use `followup_task` only for continued production, and `wait_agent` to collect results. Never create another user-owned Codex task unless requested.
 
 Infer the outcome from the request and conversation. Discussion alone does not authorize implementation. Compose explicitly requested outcomes in the same task, meeting each contract; completion of one does not authorize the next. Record scope changes and decisions; preserve failure history for continuations of the same run, and keep a separate later request’s attempt count independent. Ask a focused question only when a missing decision prevents sound progress; continue independent authorized work.
 
@@ -45,7 +45,11 @@ For each delegated task select an available model and supported reasoning effort
 
 After failure, use evidence to improve the approach, increase effort, or select greater capability within the remaining budget. A model change alone is not a new solution. The main agent remains on its task's selected model; it can delegate a bounded harder problem, but cannot promise to switch itself.
 
-## Three-attempt stop gate
+## Retry policy
+
+For a run that includes authorized delivery, use the [delivery tier escalation policy](../deliver/SKILL.md#tier-escalation-and-stop-gate) and carry its complexity, actual model/effort, tier, reservations and failures in the ledger. Returning to shape in that run does not restore a three-attempt allowance. A later authorized transition of the same unfinished run into delivery carries its existing attempts and actual production tier forward; never initialize a fresh count. The fixed-three policy below applies only to standalone shaping runs without delivery.
+
+### Standalone shaping stop gate
 
 Track at most **three failed solution attempts for the same unresolved problem within the current run across the main agent and all workers**. An attempt is an approach carried far enough to evaluate acceptance, including an approach that proves unworkable before producing a candidate. Multiple edits or individual checks in one candidate evaluation are one attempt; a corrective approach after an evaluated failure is the next. Exploration and baseline reproduction do not each consume attempts. Evaluated specification and implementation failures share the count; a passed spec gate does not reset it.
 
