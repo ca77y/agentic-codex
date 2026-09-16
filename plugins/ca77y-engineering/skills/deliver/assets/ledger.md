@@ -11,7 +11,9 @@
 - Owner/task handle (record unavailable identifiers explicitly):
 - Ownership: active / released / transferred / closed
 - Prior owner, release evidence, destination and next owner:
-- Outcome/problem identity:
+- Outcome:
+- Stable task/problem identities:
+- Parent/input spec identity (context only; never a source of task tier or failures):
 - Acceptance source:
 - User authority and authorized endpoint:
 - Entry points used:
@@ -33,7 +35,7 @@
 
 ## Tasks and model choices
 
-Record every task/assignment, including direct main-agent work and validation. Keep task scores independent of the overall spec. Trivial work without a spec still has a scored ledger task. Distinguish planned settings from observed settings; mark unavailable actual effort explicitly.
+Record every stable task/problem and assignment, including direct main-agent work and validation. Keep task scores independent of the overall spec. A spec task is distinct from its implementation children; revalidation of a reused artifact is evidence-only. Trivial work without a spec still has a scored ledger task. Distinguish planned settings from observed settings; mark unavailable actual effort explicitly.
 
 | Task / problem identity | Complexity (1–10) / rationale | Intended model / effort | Actual model / effort / owner | Selection or deviation rationale | Solution tier or evidence-only |
 | --- | --- | --- | --- | --- | --- |
@@ -62,9 +64,10 @@ Use `none` when no workers exist. Copy one record per dispatch, including valida
 | --- | --- | --- | --- | --- |
 | <criterion or gate> | <exact revision/snapshot> | <handle or not applicable> | <observation or command/result link> | <pass / fail / unverified / stale> |
 
-## Attempts and reservations
+## Attempts and reservations: <stable task/problem>
 
-- Problem identity:
+- Stable task/problem identity:
+- Parent/input spec identity (context only):
 - Governing policy: delivery tier escalation / standalone fixed-three
 - Starting solution tier (actual first evaluated solution model; unestablished before evaluation):
 - Current solution tier / actual model and effort:
@@ -84,7 +87,7 @@ Use `none` when no workers exist. Copy one record per dispatch, including valida
 | --- | --- | --- | --- | --- |
 | None yet | | | | |
 
-Preserve evaluated failures across gates, workers, turns and entry points within this run. Preparatory work, comment review, baseline defect discovery and pre-work dispatch failures consume no attempts. A submitted spec failing acceptance is a solution failure at its actual production tier; a validator's model alone never changes that tier. Under delivery policy, allow three initial attempts then one per higher tier, with no demotion; early promotion forfeits unused/skipped slots. Under standalone policy, keep the total limit of three. Repeat for genuinely independent problems without splitting an unresolved outcome to reset it. A terminal stop on any problem stops the whole run. Separate later user requests start separate ledgers; retain this history as context.
+Preserve this task/problem's evaluated failures across its gates, workers, turns and entry points within the run. Preparatory work, comment review, baseline defect discovery and pre-work dispatch failures consume no attempts. A submitted spec failing acceptance is a solution failure only for that spec task at its actual supported production tier; a validator's model and revalidation alone never change or establish a tier. Under delivery policy, allow three initial attempts then one per higher tier, with no demotion; see [conditional routing and escalation](../references/escalation.md) for exceptions. Under standalone policy, keep the total limit of three. Repeat this section for genuinely independent tasks without splitting, renaming or reparenting an unresolved outcome to reset it. A terminal stop on any problem stops the whole run. Separate later user requests start separate ledgers; retain this history as context.
 
 ## Decisions and handoff
 
