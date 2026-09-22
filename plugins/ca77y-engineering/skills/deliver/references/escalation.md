@@ -4,7 +4,7 @@ Read only when a requested production model is unavailable, the actual productio
 
 ## Resolve production models
 
-Routing recognizes only `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-5.6-sol`, and `gpt-6-astra`, plus a host-confirmed alias that resolves to one of those IDs. If the requested model is unavailable, choose another supported listed model and start at that model's named tier. Do not infer a tier for an unlisted model from its name or task complexity. If no listed model or confirmed alias is available, report unsupported routing before solution work.
+Routing recognizes only `gpt-6-luna`, `gpt-6-sol`, and `gpt-6-astra`, plus a host-confirmed alias that resolves to one of those IDs. If the requested model is unavailable, choose another supported listed model and start at that model's named tier. Do not infer a tier for an unlisted model from its name or task complexity. If no listed model or confirmed alias is available, report unsupported routing before solution work.
 
 An unknown actual production model blocks further routing and attempt allocation until it is resolved; retain the task's recorded history and do not guess a tier. A reused artifact is an input. Its read-only revalidation, validator model, and unknown historical author are evidence-only and never initialize a production tier. A newly produced or revised spec uses its current supported production model only for its own spec task's evaluated attempt.
 
