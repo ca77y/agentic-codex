@@ -59,12 +59,12 @@ Use **Sol medium as the calibration anchor** for substantial but understood work
 
 | Task complexity | Typical scope | Model | Preferred effort | Other useful efforts when supported |
 | --- | --- | --- | --- | --- |
-| 1–4 | Clear, bounded work with limited coupling | `gpt-5.6-luna` | `max` | `low`, `medium`, `high`, `xhigh` |
-| 5–6 | Several interacting parts or moderate uncertainty | `gpt-5.6-terra` | `xhigh` | `medium`, `high` |
-| 7–8 | Substantial design, integration or consequential uncertainty | `gpt-5.6-sol` | `high` | `medium`, `xhigh` |
+| 1–4 | Clear, bounded work with limited coupling | `gpt-6-luna` | `max` | `low`, `medium`, `high`, `xhigh` |
+| 5–6 | Several interacting parts or moderate uncertainty | `gpt-6-sol` | `medium` | `high`, `xhigh` |
+| 7–8 | Substantial design, integration or consequential uncertainty | `gpt-6-sol` | `high` | `medium`, `xhigh` |
 | 9–10 | Exceptional ambiguity, system-wide coupling or consequences | `gpt-6-astra` | `medium` | `high`, `xhigh` |
 
-The preferred progression is **Luna/max → Terra/xhigh → Sol/high → Astra/medium**. Effort configurations can overlap in capability; exhausting all efforts is not required before promotion. Route only the listed model IDs and host-confirmed aliases that resolve to one. Select combinations supported by the actual host; conditional model resolution is in [conditional routing and escalation](references/escalation.md).
+The preferred model progression is **Luna → Sol → Astra**, with the default efforts above. Both Sol complexity bands share one solution tier; changing effort does not add attempts. Effort configurations can overlap in capability; exhausting all efforts is not required before promotion. Route only the listed model IDs and host-confirmed aliases that resolve to one. Select combinations supported by the actual host; conditional model resolution is in [conditional routing and escalation](references/escalation.md).
 
 The main agent may choose a stronger start when ambiguity, coupling, context needs, error consequences or observed failure justify it. Record the evidence and selection/deviation rationale, rather than promoting by role identity or habit. Never shrink validation scope to fit a model. Keep custom-agent definitions free of fixed model/effort settings; pass explicit selections at dispatch with a fresh context (`fork_turns: "none"`, or a bounded context supported by the tool; validators always use `"none"`).
 
@@ -78,8 +78,7 @@ For each task/problem, allow **three evaluated attempts at the starting solution
 
 | Starting tier | Initial allowance | Higher-tier corrective allowance | Maximum failed attempts |
 | --- | --- | --- | --- |
-| Luna | 3 | Terra: 1; Sol: 1; Astra: 1 | 6 |
-| Terra | 3 | Sol: 1; Astra: 1 | 5 |
+| Luna | 3 | Sol: 1; Astra: 1 | 5 |
 | Sol | 3 | Astra: 1 | 4 |
 | Astra | 3 | None | 3 |
 
